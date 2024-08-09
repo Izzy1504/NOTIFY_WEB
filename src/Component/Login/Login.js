@@ -6,7 +6,7 @@ const LoginForm = () => {
     <div className="login-page">
       <div className="login-container">
         <form className="login-form">
-          <h2>Login Form</h2>
+          <h2>Welcome</h2>
           <div className="input-group">
             <input type="text" placeholder="Email or Username" />
           </div>
