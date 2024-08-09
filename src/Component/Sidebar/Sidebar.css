@@ -1,5 +1,5 @@
 .sidebar {
-    width: 250px;
+    width: 200px;
     height: 100vh;
     background-color: #181818;
     color: #fff;
@@ -83,4 +83,7 @@
   .nested-dropdown-content li {
     padding: 5px 0;
   }
-  
+  .sidebar__library:hover,
+  .sidebar__playlists:hover {
+    transform: scale(1.05);
+  }

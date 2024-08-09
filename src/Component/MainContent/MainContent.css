@@ -8,10 +8,11 @@
   }
   .login-type{
 
-      background-color: #555353; /* Màu nền xám */
+      background-color: #f4e8e8; /* Màu nền xám */
       padding: 5px 20px; /* Khoảng cách bên trong khung */
       border-radius: 10px; /* Bo góc khung */
       border: 1px solid #ccc; /* Viền xung quanh khung */
+      gap:20px;
     }
   
   .main-content__header {
@@ -60,4 +61,6 @@
     margin-top: 10px;
     font-size: 1em;
   }
-  
+  .login-type:hover {
+    transform: scale(1.05);
+  }

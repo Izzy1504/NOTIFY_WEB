@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../Sidebar/Sidebar.css';
+
 const Sidebar = () => {
     const [isLikedSongsOpen, setIsLikedSongsOpen] = useState(false);
     const [isLibraryOpen, setIsLibraryOpen] = useState(false);

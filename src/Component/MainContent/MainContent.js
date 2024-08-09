@@ -1,11 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../MainContent/MainContent.css';
+
 const MainContent = () => {
+  const navigate = useNavigate();
+  const handleLoginClick = () => {
+    navigate('/login'); // Điều hướng đến trang đăng nhập
+  };
   return (  
     <div className="main-content">
       <div className="main-content__header">
         <h2>Bài hát đã thích</h2>
-        <h2 className="login-type"> Đăng nhập </h2>
+        <button onClick={handleLoginClick} className="login-type">Đăng nhập</button>
       </div>
       <div className="main-content__playlists">
         <h3>Vì đây là web-made by myself nên là các album sẽ được link qua youtube</h3>
