@@ -1,5 +1,5 @@
 import React from 'react';
-import './MainContent.css';
+import '../MainContent/MainContent.css';
 const MainContent = () => {
   return (  
     <div className="main-content">
