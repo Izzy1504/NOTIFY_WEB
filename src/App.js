@@ -3,6 +3,7 @@ import './App.css';
 import Sidebar from './Component/Sidebar/Sidebar';
 import MainContent from './Component/MainContent/MainContent';
 import LoginForm from './Component/Login/Login.js';
+import Home from './Component/Home/Home.js';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </div>
   );
