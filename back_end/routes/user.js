@@ -30,7 +30,7 @@ userRouter.post("/register", async (req, res) => {
 // Login
 userRouter.post("/login", async (req, res) => {
     try{
-        const sql = "select * from users where email = $1";
+        const sql = "select * from user where email = $1";
         const result = await query(sql, [req.body.email]);
         if (result.rowCount === 1){
             bcrypt.compare(req.body.password, result.rows[0].password, (err, bcrypt_res) => {
@@ -38,7 +38,7 @@ userRouter.post("/login", async (req, res) => {
                     console.log(bcrypt_res)
                     if(bcrypt_res === true){
                         const user = result.rows[0];
-                        res.status(200).json({"user_id": user.user_id, "email": user.email, "user_name": user.user_name})
+                        res.status(200).json({"id": user.user_id, "email": user.email, "user_name": user.user_name})
                     }else{
                         res.statusMessage = "Invalid login";
                         res.status(401).json({error: 'Invalid login'})
@@ -61,7 +61,7 @@ userRouter.post("/login", async (req, res) => {
 userRouter.put("/users/password", async(req, res) => {
     console.log(req.body);
     try {
-        const sql = 'SELECT * FROM users WHERE user_id=$1';
+        const sql = 'SELECT * FROM user WHERE id=$1';
         const result = await query(sql,[req.body.user_id]);
         console.log(result.rowCount);
         console.log(req.body.password);
@@ -72,7 +72,7 @@ userRouter.put("/users/password", async(req, res) => {
             const passwordMatch = await bcrypt.compare(req.body.password, user.password);
             if (passwordMatch) {
                 const hashedPassword = await bcrypt.hash(req.body.new_pass, 10);
-                const new_sql = 'UPDATE users SET password = $1 WHERE user_id = $2 RETURNING *';
+                const new_sql = 'UPDATE user SET password = $1 WHERE id = $2 RETURNING *';
                 const newResult = await query(new_sql, [hashedPassword, req.body.user_id]);
                 console.log(newResult.rows[0])
                 res.status(200).json({ "user_name": newResult.rows[0].user_name, message: 'Password updated successfully' });

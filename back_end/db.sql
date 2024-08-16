@@ -1,6 +1,7 @@
-CREATE TABLE "user " (
-	"id" INTEGER NOT NULL UNIQUE,
+CREATE TABLE "users" (
+	"id" serial primary key,
 	"user_name" VARCHAR NOT NULL,
+    "email" VARCHAR NOT NULL,
 	"password" VARCHAR NOT NULL,
 	PRIMARY KEY("id")
 );
