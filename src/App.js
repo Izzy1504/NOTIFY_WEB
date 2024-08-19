@@ -4,6 +4,7 @@ import Sidebar from './Component/Sidebar/Sidebar';
 import MainContent from './Component/MainContent/MainContent';
 import LoginForm from './Component/Login/Login.js';
 import Home from './Component/Home/Home.js';
+import Signup from './Component/Signup/Signup.js'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
   );

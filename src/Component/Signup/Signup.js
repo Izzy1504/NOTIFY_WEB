@@ -32,3 +32,5 @@ const signupForm = () => {
         </div>
     )
 }
+
+export default signupForm;
