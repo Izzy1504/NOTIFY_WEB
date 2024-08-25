@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="app">
       {/* Kiểm tra nếu không phải là trang đăng nhập thì hiển thị Sidebar */}
-      {location.pathname !== '/login' && <Sidebar />}
+      {location.pathname !== '/login' && location.pathname !=='/signup' && <Sidebar />}
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
