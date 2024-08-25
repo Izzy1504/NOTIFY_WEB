@@ -1,7 +1,14 @@
 import React from 'react'
+import axios from 'axios';
 import './Signup.css'
 
 const signupForm = () => {
+
+    const onSubmit = (data) =>{
+        axios.post("http://localhost:3001/register", data).then((response) => {
+            console.log(response);
+        })
+    }
     return (
         <div className="signup-page">
             <div className="signup-container">
@@ -11,11 +18,14 @@ const signupForm = () => {
                         <input type="text" placeholder="Email" />
                     </div>
                     <div className="input-group">
-                        <input type="password" placeholder="Password" />
+                        <input type="text" placeholder="Username" />
                     </div>
                     <div className="input-group">
-                        <input type="password" placeholder="Confirm Password" />
+                        <input type="password" placeholder="Password" />
                     </div>
+                    {/* <div className="input-group">
+                        <input type="password" placeholder="Confirm Password" />
+                    </div> */}
                     <button className="signup-btn">Signup</button>
                     <div className="social-login">
                         <p>Or signup with</p>
