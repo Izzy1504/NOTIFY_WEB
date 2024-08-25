@@ -3,7 +3,6 @@ CREATE TABLE "users" (
 	"user_name" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
 	"password" VARCHAR NOT NULL,
-	PRIMARY KEY("id")
 );
 
 
