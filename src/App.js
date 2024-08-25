@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Sidebar from './Component/Sidebar/Sidebar';
+import Footer from './Component/Footer/Footer';
 import MainContent from './Component/MainContent/MainContent';
 import LoginForm from './Component/Login/Login.js';
 import Home from './Component/Home/Home.js';
@@ -21,6 +22,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
+     
+  
     </div>
   );
 }

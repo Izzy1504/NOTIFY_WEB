@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'; // Import icons
 import '../Home/Home.css';
-import { FaBell } from 'react-icons/fa'; // Import icon notification
-
+import '../Footer/Footer.js';
+import { useNavigate } from 'react-router-dom';
 const Home = () => {
-  const navigate = useNavigate();
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleLoginClick = () => {
-    navigate('/login'); // Điều hướng đến trang đăng nhập
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+    setShowNotifications(false); // Đóng pop-up thông báo nếu đang mở
   };
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
+    setShowUserMenu(false); // Đóng pop-up người dùng nếu đang mở
   };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+   
+    // Ví dụ: xóa token, thông tin người dùng từ localStorage
+    localStorage.removeItem('userToken');
+  
+    // Chuyển hướng về trang đăng nhập
+    navigate('/login');
+  };
+
 
   return (
     <div className="Home">
@@ -24,13 +36,34 @@ const Home = () => {
             <FaBell size={25} />
             {showNotifications && (
               <div className="notification-popup">
-                <p>Thông báo 1</p>
-                <p>Thông báo 2</p>
+                <h4>Thông báo</h4>
+                <p>Bạn có 1 tin nhắn mới</p>
+                <p>Thông báo về bài hát mới</p>
+                <p>Cập nhật tính năng mới</p>
               </div>
             )}
           </div>
-          <div className="user-circle">
-            <span>ĐK</span> {/* Giả định là tên viết tắt của người dùng */}
+          <div className="user-circle" onClick={toggleUserMenu}>
+            <FaUserCircle size={30} />
+            {showUserMenu && (
+              <div className="user-menu">
+                <div className="user-menu-item">
+                  <span>Tài khoản</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Hồ sơ</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Chế độ nghe riêng tư</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Cài đặt</span>
+                </div>
+                <div className="user-menu-item" onClick={handleLogout}>
+                  <FaSignOutAlt /> Đăng xuất
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -55,6 +88,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+    
     </div>
   );
 };
