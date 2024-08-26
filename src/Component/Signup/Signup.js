@@ -1,32 +1,90 @@
-import React from 'react'
+import React, { useState } from 'react';
 import axios from 'axios';
-import './Signup.css'
+import { Navigate, useNavigate } from 'react-router-dom';
+import './Signup.css';
 
-const signupForm = () => {
+const SignupForm = () => {
+    // State variables to hold form data
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const onSubmit = (data) =>{
-        axios.post("http://localhost:3001/register", data).then((response) => {
-            console.log(response);
-        })
-    }
+    const navigate = useNavigate();
+
+    const onSubmit = (event) => {
+
+        event.preventDefault();
+
+        // Validate password match
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        // Data to be sent to the backend
+        const data = {
+            email,
+            username,
+            password,
+        };
+
+        // Post request to register endpoint
+        axios.post("http://localhost:3001/register", data)
+            .then((response) => {
+                console.log(response);
+                navigate('/signin')
+                // Handle success (e.g., redirect to login page)
+            })
+            .catch((error) => {
+                console.error('Error: ', error);
+            });
+    };
+
     return (
         <div className="signup-page">
             <div className="signup-container">
-                <form className="signup-form">
+                <form className="signup-form" onSubmit={onSubmit}>
                     <h2>Signup</h2>
                     <div className="input-group">
-                        <input type="text" placeholder="Email" />
+                        <input
+                            type="text"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="input-group">
-                        <input type="text" placeholder="Username" />
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="input-group">
-                        <input type="password" placeholder="Password" />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
                     </div>
-                    {/* <div className="input-group">
-                        <input type="password" placeholder="Confirm Password" />
-                    </div> */}
-                    <button className="signup-btn">Signup</button>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    {error && <p className="error-message">{error}</p>}
+                    <button className="signup-btn" type="submit">Signup</button>
                     <div className="social-login">
                         <p>Or signup with</p>
                         <div className="social-buttons">
@@ -40,7 +98,7 @@ const signupForm = () => {
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
-export default signupForm;
+export default SignupForm;
