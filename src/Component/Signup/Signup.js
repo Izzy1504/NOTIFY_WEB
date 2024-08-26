@@ -6,7 +6,7 @@ import './Signup.css';
 const SignupForm = () => {
     // State variables to hold form data
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [user_name, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -26,7 +26,7 @@ const SignupForm = () => {
         // Data to be sent to the backend
         const data = {
             email,
-            username,
+            user_name,
             password,
         };
 
@@ -34,8 +34,7 @@ const SignupForm = () => {
         axios.post("http://localhost:3001/register", data)
             .then((response) => {
                 console.log(response);
-                navigate('/signin')
-                // Handle success (e.g., redirect to login page)
+                navigate('/login')
             })
             .catch((error) => {
                 console.error('Error: ', error);
@@ -60,7 +59,7 @@ const SignupForm = () => {
                         <input
                             type="text"
                             placeholder="Username"
-                            value={username}
+                            value={user_name}
                             onChange={(e) => setUsername(e.target.value)}
                             required
                         />
