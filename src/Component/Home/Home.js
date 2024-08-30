@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'; // Import icons
 import '../Home/Home.css';
-import '../Footer/Footer.js';
 import { useNavigate } from 'react-router-dom';
 const Home = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -11,12 +10,15 @@ const Home = () => {
     setShowUserMenu(!showUserMenu);
     setShowNotifications(false); // Đóng pop-up thông báo nếu đang mở
   };
-
+  const navigate = useNavigate();
+  const handdleuser =()=>{
+    navigate('/userin');
+  };
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     setShowUserMenu(false); // Đóng pop-up người dùng nếu đang mở
   };
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const handleLogout = () => {
    
     // Ví dụ: xóa token, thông tin người dùng từ localStorage
@@ -47,7 +49,7 @@ const Home = () => {
             <FaUserCircle size={30} />
             {showUserMenu && (
               <div className="user-menu">
-                <div className="user-menu-item">
+                <div className="user-menu-item" onClick={handdleuser}>
                   <span>Tài khoản</span>
                 </div>
                 <div className="user-menu-item">

@@ -1,0 +1,119 @@
+.userin-container {
+    background-color: #121212;
+    color: white;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    height: 95vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+  }
+  
+  /* Tăng chiều rộng cho header và section */
+  .header,
+  .section {
+    width: 100%; /* Sẽ thu nhỏ để khớp với kích thước của nội dung */
+    max-width: 800px; /* Giới hạn chiều rộng lớn hơn để nội dung rộng hơn */
+    margin: 0 auto; /* Căn giữa phần tử */
+    
+  }
+  
+  /* Giữ nội dung của header và section căn giữa */
+  .header {
+    padding: 20px;
+    background-color: #282828;
+    margin-bottom: 20px;
+    text-align: center; /* Căn giữa nội dung text */
+    justify-content: center;
+  }
+  
+  .section {
+    background-color: #181818;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+  
+  /* Căn giữa nội dung text trong section */
+  .section h3 {
+    text-align: center;
+  }
+  
+  .premium-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    background-color: #18cbf8;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .premium-banner img {
+    margin-right: 20px;
+  }
+  
+  .premium-info {
+    text-align: left; /* Để nội dung văn bản trong phần premium-info canh trái */
+  }
+  
+  /* Đảm bảo nút bấm trong phần premium-info cũng được căn giữa */
+  .premium-info button {
+    display: block;
+    margin: 10px auto; /* Căn giữa nút */
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .account-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .account-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Tạo khung tròn cho avatar */
+    margin-right: 10px;
+  }
+  
+  .account-status h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .account-status p {
+    margin: 0;
+    color: #888; /* Màu sắc của gói tài khoản */
+  }
+  
+  .section ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .section ul li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+  }
+  
+  .section ul li:last-child {
+    border-bottom: none;
+  }
+  
+  .section ul li span {
+    margin-right: 10px;
+  }
+  

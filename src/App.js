@@ -1,25 +1,27 @@
 import React from 'react';
 import './App.css';
 import Sidebar from './Component/Sidebar/Sidebar';
-import Footer from './Component/Footer/Footer';
+
 import MainContent from './Component/MainContent/MainContent';
 import LoginForm from './Component/Login/Login.js';
 import Home from './Component/Home/Home.js';
 import Signup from './Component/Signup/Signup.js'
+import Userin from './Component/Userinfo/Userin.js'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
-function App() {
+function App() {  
   // Lấy đường dẫn hiện tại
   const location = useLocation();
 
   return (
     <div className="app">
       {/* Kiểm tra nếu không phải là trang đăng nhập thì hiển thị Sidebar */}
-      {location.pathname !== '/login' && location.pathname !=='/signup' && <Sidebar />}
+      {location.pathname !== '/login' && location.pathname !=='/signup'&& location.pathname !=='/userin' && <Sidebar />}
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/userin" element={<Userin/>} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
      
