@@ -1,10 +1,10 @@
 .main-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #282828;
-    color: #fff;
-    border-radius: 15px;
-    overflow-y: auto;
+  flex: 1;
+  padding: 20px;
+  background-color: #282828;
+  color: #fff;
+  border-radius: 15px;
+  overflow-y: auto;
   }
   .login-type{
 

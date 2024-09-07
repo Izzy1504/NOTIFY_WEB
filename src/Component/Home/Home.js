@@ -27,6 +27,10 @@ const Home = () => {
     // Chuyển hướng về trang đăng nhập
     navigate('/login');
   };
+  // cái này sẽ tạo sự kiện onlick khi ấn vào album| Hiện tại thì ấn vô nó sẽ ra cái link như này : http://localhost:3000/musicplayer/1 thì xoá số 1 đi mình sẽ vào được page tĩnh của player
+  const handleAlbumClick = (albumId) => {
+    navigate(`/musicplayer/${albumId}`);
+  };
 
 
   return (
@@ -72,19 +76,19 @@ const Home = () => {
       <div className="Home__playlists">
         <h3>Vì đây là web-made by myself nên là các album sẽ được link qua youtube</h3>
         <div className="playlist-grid">
-          <div className="playlist">
+          <div className="playlist" onClick={() => handleAlbumClick(1)}>
             <img src="https://i.scdn.co/image/ab67616d00001e02c006b0181a3846c1c63e178f" alt="Album 1" />
             <h4>Album 1</h4>
           </div>
-          <div className="playlist">
+          <div className="playlist" onClick={() => handleAlbumClick(2)}>
             <img src="https://i.scdn.co/image/ab67616d00001e022cd9649ea111a552283f0165" alt="Album 2" />
             <h4>Album 2</h4>
           </div>
-          <div className="playlist">
+          <div className="playlist" onClick={() => handleAlbumClick(3)}>
             <img src="https://i.scdn.co/image/ab67616d0000b27371430c9ea4b34fb0b75ba14b" alt="Album 3" />
             <h4>Album 3</h4>
           </div>
-          <div className="playlist">
+          <div className="playlist" onClick={() => handleAlbumClick(4)}>
             <img src="https://i.scdn.co/image/ab67616d00001e02e1e1f8385eccf8e572507b7a" alt="Album 4" />
             <h4>Album 4</h4>
           </div>
