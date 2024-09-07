@@ -1,91 +1,100 @@
 .sidebar {
-    width: 200px;
-    height: 100vh;
-    background-color: #181818;
-    color: #fff;
-    padding: 20px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .sidebar__header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .sidebar__header input {
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    background-color: #282828;
-    color: #fff;
-  }
-  
-  .sidebar__library,
-  .sidebar__playlists {
-    margin-top: 20px;
-    border-radius: 10px;
-  }
-  
-  .sidebar__library h3,
-  .sidebar__playlists h3 {
-    margin-bottom: 10px;
-    cursor: pointer;
-    border-radius: 10px;
-  }
-  
-  .sidebar__library ul,
-  .sidebar__playlists ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar__library ul li,
-  .sidebar__playlists ul li {
-    margin-bottom: 10px;
-  }
-  
-  .dropdown-toggle {
-    cursor: pointer;
-    background-color: #282828;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
-  .dropdown-content {
-    background-color: #6b6c6e; /* Blue background for dropdown */
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .dropdown-content li {
-    padding: 5px 0;
-    cursor: pointer;
-  }
-  
-  .nested-dropdown-toggle {
-    cursor: pointer;
-    background-color: #282828;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .nested-dropdown-content {
-    background-color: #57595b; /* Darker blue background for nested dropdown */
-    padding: 10px;
-    border-radius: 10px;
-    margin-top: 5px;
-  }
-  
-  .nested-dropdown-content li {
-    padding: 5px 0;
-  }
-  .sidebar__library:hover,
-  .sidebar__playlists:hover {
-    transform: scale(1.05);
-  }
+  width: 200px;
+  height: calc(100vh - 20px); /* Chiều cao vừa với body, trừ đi padding */
+  background-color: #181818;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto; /* Thêm phần scroll để tránh bị out cái phần body như mấy page cũ ( updated : 7/9/24) */
+}
+
+.sidebar__header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar__header input {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #282828;
+  color: #fff;
+}
+
+.sidebar__library,
+.sidebar__playlists {
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.sidebar__library h3,
+.sidebar__playlists h3 {
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.sidebar__library ul,
+.sidebar__playlists ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar__library ul li,
+.sidebar__playlists ul li {
+  margin-bottom: 10px;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  background-color: #282828;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.dropdown-content {
+  background-color: #6b6c6e;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.dropdown-content li {
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.nested-dropdown-toggle {
+  cursor: pointer;
+  background-color: #282828;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.nested-dropdown-content {
+  background-color: #57595b;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.nested-dropdown-content li {
+  padding: 5px 0;
+}
+
+.sidebar__library:hover,
+.sidebar__playlists:hover {
+  transform: scale(1.05);
+}
+
+body {
+  margin: 0;
+  padding: 10px; /* Khoảng cách nhỏ để sidebar không bị dính vào viền */
+  background-color: #121212;
+  color: white;
+}
