@@ -1,4 +1,3 @@
-
 .Music {
     flex: 1;
     padding: 20px;
@@ -72,15 +71,14 @@
     display: flex;
     align-items: center; /* Căn giữa các icon theo trục dọc */
     gap: 20px; /* Tạo khoảng cách giữa các icon */
-  }
-  
+}
+
 .notification-icon {
     cursor: pointer;
     position: relative;
-    
-  }
-  
-  .notification-popup {
+}
+
+.notification-popup {
     position: absolute;
     top: 100%;
     right: 0;
@@ -92,24 +90,24 @@
     z-index: 100;
     color: white;
     width: 250px;
-  }
-  
-  .notification-popup h4 {
+}
+
+.notification-popup h4 {
     margin: 0 0 10px;
     border-bottom: 1px solid #555;
     padding-bottom: 5px;
-  }
-  
-  .notification-popup p {
+}
+
+.notification-popup p {
     margin: 5px 0;
-  }
-  
-  .user-circle {
+}
+
+.user-circle {
     cursor: pointer;
     position: relative;
-  }
-  
-  .user-menu {
+}
+
+.user-menu {
     position: absolute;
     top: 100%;
     right: 0;
@@ -121,27 +119,26 @@
     z-index: 100;
     color: white;
     width: 200px;
-  }
-  
-  .user-menu-item {
+}
+
+.user-menu-item {
     padding: 10px 0;
     cursor: pointer;
     border-bottom: 1px solid #555;
-  }
-  
-  .user-menu-item:last-child {
-    border-bottom: none;
-  }
-  
-  .user-menu-item:hover {
-    background-color: #444;
-  }
-  
-  .user-menu-item span {
-    margin-left: 10px;
-  }
+}
 
-  
+.user-menu-item:last-child {
+    border-bottom: none;
+}
+
+.user-menu-item:hover {
+    background-color: #444;
+}
+
+.user-menu-item span {
+    margin-left: 10px;
+}
+
 /* Album Information */
 .album-info {
     display: flex;
@@ -238,4 +235,85 @@
 
 .album-thumbnails img:hover {
     transform: scale(1.05); /* Slightly scale on hover */
+}
+
+/* Bottom Playback Bar */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #000;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.bottom-bar-left {
+    display: flex;
+    align-items: center;
+}
+
+.bottom-album-art {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 8px;
+}
+
+.bottom-song-info h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.bottom-song-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.bottom-controls {
+    display: flex;
+    align-items: center;
+}
+
+.bottom-controls .control-button {
+    padding: 10px;
+    /* font-size: 18px; */
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.bottom-progress {
+    display: flex;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 5px;
+    background-color: #333;
+    border-radius: 3px;
+    margin: 0 10px;
+}
+
+.progress-filled {
+    width: 30%;
+    height: 100%;
+    background-color: white;
+    border-radius: 3px;
+}
+
+.bottom-progress span {
+    font-size: 12px;
+}
+.bold-icon {
+  font-weight: bold; /* Apply bold weight */
+  color: #31d0ec; /* Optional: Change color to emphasize */
+  transform: scale(1.2); /* Optional: Slightly increase the size */
+  transition: transform 0.2s, color 0.2s; /* Smooth transition for the effects */
 }

@@ -98,3 +98,12 @@ body {
   background-color: #121212;
   color: white;
 }
+.volume-icon {
+  margin-right: 10px; /* Adjust spacing */
+}
+.time-icon {
+  margin-left: 10px; /* Adjust spacing */
+}
+.clock-icon {
+  margin-right: 10px; /* Adjust spacing */
+}
