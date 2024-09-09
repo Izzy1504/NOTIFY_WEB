@@ -313,7 +313,7 @@
 }
 .bold-icon {
   font-weight: bold; /* Apply bold weight */
-  color: #31d0ec; /* Optional: Change color to emphasize */
+  color: #eef1f1; /* Optional: Change color to emphasize */
   transform: scale(1.2); /* Optional: Slightly increase the size */
   transition: transform 0.2s, color 0.2s; /* Smooth transition for the effects */
 }
