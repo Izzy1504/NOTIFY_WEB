@@ -169,20 +169,22 @@
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
+    
 }
 
 .control-button {
-    background-color: #31d0ec;
+    background-color: #343636;
     border: none;
     border-radius: 50%;
     padding: 15px;
     cursor: pointer;
     color: #fff;
     transition: transform 0.2s; /* Add smooth hover transition */
+    
 }
 
 .control-button:hover {
-    background-color: #31d0ec;
+    background-color: #343636;
     transform: scale(1.1); /* Slightly scale on hover */
 }
 
@@ -283,10 +285,13 @@
 
 .bottom-controls .control-button {
     padding: 10px;
-    /* font-size: 18px; */
+    font-size: 15px;
     border-radius: 50%;
     margin-right: 10px;
+    justify-content: center;
+    align-items: center;
 }
+
 
 .bottom-progress {
     display: flex;
@@ -316,4 +321,42 @@
   color: #eef1f1; /* Optional: Change color to emphasize */
   transform: scale(1.2); /* Optional: Slightly increase the size */
   transition: transform 0.2s, color 0.2s; /* Smooth transition for the effects */
+}
+/* CSS cho thanh trượt âm lượng */
+.volume-slider {
+    /* position: absolute;
+    top: -30px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px; */
+    cursor: pointer;
+    background-color: #cbe2e2;
+    /* -webkit-appearance: ; */
+    height: 5px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.volume-slider:hover {
+    opacity: 1;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
 }

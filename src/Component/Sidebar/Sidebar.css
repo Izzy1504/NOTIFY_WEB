@@ -100,6 +100,7 @@ body {
 }
 .volume-icon {
   margin-right: 10px; /* Adjust spacing */
+  cursor: pointer;
 }
 .time-icon {
   margin-left: 10px; /* Adjust spacing */

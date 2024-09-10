@@ -11,13 +11,12 @@ import {
   faPause,
   faForward,
   faBackward,
-  faRepeat,
-  faRetweet,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa"; // Import icons
 import "../Musicplayer/Musicplayer.css";
 import { useNavigate } from "react-router-dom";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const MusicPlayer = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -25,6 +24,9 @@ const MusicPlayer = () => {
   const [selectedSong, setSelectedSong] = useState("Đừng Làm Trái Tim Anh Đau"); // Default song
   const [isPlaying, setIsPlaying] = useState(false); // Track playing state
   const [isRepeat, setIsRepeat] = useState(true); // làm cho repeat
+  const [volume, setVolume] = useState(50); // Volume state
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false); // Volume slider visibility
+
 
   const toggleUserMenu = () => {
     setShowUserMenu(!showUserMenu);
@@ -57,6 +59,15 @@ const MusicPlayer = () => {
   // Function to toggle bold effect
   const toggleBold = () => {
     setIsBold(!isBold); // Toggle state between true and false
+  };
+
+  const toggleVolumeSlider = () => {
+    setShowVolumeSlider(!showVolumeSlider); // Toggle volume slider visibility
+  };
+
+  const handleVolumeChange = (event) => {
+    setVolume(event.target.value); // Update volume value
+    console.log("Volume:", event.target.value); // Log current volume value
   };
 
   return (
@@ -204,13 +215,31 @@ const MusicPlayer = () => {
             <FontAwesomeIcon icon={faForward} />
           </button>
           <button className="control-button" onClick={toggleRotate}>
-            <FontAwesomeIcon icon={isRepeat ? faRepeat : faRetweet} />
+            {/* <FontAwesomeIcon icon={isRepeat ? faRepeat : faRetweet} /> */}
+            <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"}></i>
           </button>
         </div>
 
         {/* Add Volume and Time Icons */}
         <div className="bottom-progress">
-          <FontAwesomeIcon icon={faVolumeUp} className="volume-icon" />{" "}
+          {/* Volume icon */}
+          <FontAwesomeIcon
+            icon={faVolumeUp}
+            className="volume-icon"
+            onClick={toggleVolumeSlider}
+          />
+
+          {/* Thanh trượt âm lượng sẽ hiển thị khi showVolumeSlider = true */}
+          {showVolumeSlider && (
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="volume-slider"
+            />
+          )}
           {/* Volume icon */}
           <FontAwesomeIcon icon={faClock} className="clock-icon" />
            {/* clock icon */}
