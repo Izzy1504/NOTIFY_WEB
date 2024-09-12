@@ -1,42 +1,123 @@
-import React, { useState } from 'react';
-import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'; // Import icons
+import React, { useState, useEffect } from 'react';
+import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import '../Home/Home.css';
 import { useNavigate } from 'react-router-dom';
+
 const Home = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [jumpBackIn, setJumpBackIn] = useState([]);
+  
+  const navigate = useNavigate();
 
   const toggleUserMenu = () => {
     setShowUserMenu(!showUserMenu);
-    setShowNotifications(false); // Đóng pop-up thông báo nếu đang mở
+    setShowNotifications(false);
   };
-  const navigate = useNavigate();
-  const handdleuser =()=>{
+
+  const handdleuser = () => {
     navigate('/userin');
   };
+
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
-    setShowUserMenu(false); // Đóng pop-up người dùng nếu đang mở
+    setShowUserMenu(false);
   };
-  // const navigate = useNavigate();
+
   const handleLogout = () => {
-   
-    // Ví dụ: xóa token, thông tin người dùng từ localStorage
     localStorage.removeItem('userToken');
-  
-    // Chuyển hướng về trang đăng nhập
     navigate('/login');
   };
-  // cái này sẽ tạo sự kiện onlick khi ấn vào album| Hiện tại thì ấn vô nó sẽ ra cái link như này : http://localhost:3000/musicplayer/1 thì xoá số 1 đi mình sẽ vào được page tĩnh của player
+
   const handleAlbumClick = (albumId) => {
     navigate(`/musicplayer/${albumId}`);
   };
 
+  // Fetch Spotify access token
+  const fetchAccessToken = async () => {
+    const clientId = 'd0a4d0901ef24d31b048d5f2ce9e9fee';
+    const clientSecret = 'c5ee7fd1352b424b912e66292e334273';
+    const authString = `${clientId}:${clientSecret}`;
+    const encodedAuthString = btoa(authString);
+  
+    try {
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${encodedAuthString}`,
+        },
+        body: 'grant_type=client_credentials&scope=user-read-recently-played user-top-read',
+      });
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      console.error('Error fetching access token:', error);
+    }
+  };
+  
+
+
+ // Fetch albums, recently played, and jump back in
+ useEffect(() => {
+  const fetchSpotifyData = async () => {
+    try {
+      const accessToken = await fetchAccessToken();
+      if (!accessToken) return;
+
+      const albumsResponse = await fetch('https://api.spotify.com/v1/browse/new-releases', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const albumsData = await albumsResponse.json();
+      setAlbums(albumsData.albums.items || []);
+
+      // Fetch Recently Played
+      const recentlyPlayedResponse = await fetch('https://api.spotify.com/v1/me/player/recently-played', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const recentlyPlayedData = await recentlyPlayedResponse.json();
+      if (recentlyPlayedData && recentlyPlayedData.items) {
+        setRecentlyPlayed(
+          recentlyPlayedData.items.map((item) => ({
+            id: item.track.id,
+            name: item.track.name,
+            imageUrl: item.track.album.images[0].url, // Lấy hình ảnh từ album của bài hát
+          }))
+        );
+      }
+
+      // Fetch Jump Back In section
+      const jumpBackInResponse = await fetch('https://api.spotify.com/v1/me/top/tracks', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const jumpBackInData = await jumpBackInResponse.json();
+      if (jumpBackInData && jumpBackInData.items) {
+        setJumpBackIn(
+          jumpBackInData.items.map((track) => ({
+            id: track.id,
+            name: track.name,
+            imageUrl: track.album.images[0].url, // Lấy hình ảnh từ album của bài hát
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching Spotify data:', error);
+    }
+  };
+
+  fetchSpotifyData();
+}, []);
+
+
 
   return (
+    
     <div className="Home">
       <div className="Home__header">
-        <h2>Bài hát đã thích</h2>
+ 
+        <h2>NOTIFY</h2>
         <div className="header-right">
           <div className="notification-icon" onClick={toggleNotifications}>
             <FaBell size={25} />
@@ -73,28 +154,53 @@ const Home = () => {
           </div>
         </div>
       </div>
+
       <div className="Home__playlists">
-        <h3>Vì đây là web-made by myself nên là các album sẽ được link qua youtube</h3>
+        <h3 className="Home__section-title">Albums mới phát hành</h3>
         <div className="playlist-grid">
-          <div className="playlist" onClick={() => handleAlbumClick(1)}>
-            <img src="https://i.scdn.co/image/ab67616d00001e02c006b0181a3846c1c63e178f" alt="Album 1" />
-            <h4>Album 1</h4>
-          </div>
-          <div className="playlist" onClick={() => handleAlbumClick(2)}>
-            <img src="https://i.scdn.co/image/ab67616d00001e022cd9649ea111a552283f0165" alt="Album 2" />
-            <h4>Album 2</h4>
-          </div>
-          <div className="playlist" onClick={() => handleAlbumClick(3)}>
-            <img src="https://i.scdn.co/image/ab67616d0000b27371430c9ea4b34fb0b75ba14b" alt="Album 3" />
-            <h4>Album 3</h4>
-          </div>
-          <div className="playlist" onClick={() => handleAlbumClick(4)}>
-            <img src="https://i.scdn.co/image/ab67616d00001e02e1e1f8385eccf8e572507b7a" alt="Album 4" />
-            <h4>Album 4</h4>
-          </div>
+          {albums.length > 0 ? (
+            albums.map((album) => (
+              <div className="playlist" key={album.id} onClick={() => handleAlbumClick(album.id)}>
+                <img src={album.images[0].url} alt={album.name} />
+                <h4>{album.name}</h4>
+              </div>
+            ))
+          ) : (
+            <p>Không có album nào để hiển thị</p>
+          )}
         </div>
       </div>
-    
+
+      {/* Recently Played Section */}
+<h3 className="Home__section-title">Recently Played</h3>
+<div className="section-grid">
+  {recentlyPlayed.length > 0 ? (
+    recentlyPlayed.map((item) => (
+      <div className="section-grid-item" key={item.id}>
+        <img src={item.imageUrl} alt={item.name} />
+        <h4>{item.name}</h4>
+      </div>
+    ))
+  ) : (
+    <p>Không có dữ liệu Recently Played để hiển thị</p>
+  )}
+</div>
+
+{/* Jump Back In Section */}
+<h3 className="Home__section-title">Jump back in</h3>
+<div className="section-grid">
+  {jumpBackIn.length > 0 ? (
+    jumpBackIn.map((item) => (
+      <div className="section-grid-item" key={item.id}>
+        <img src={item.imageUrl} alt={item.name} />
+        <h4>{item.name}</h4>
+      </div>
+    ))
+  ) : (
+    <p>Không có dữ liệu Jump Back In để hiển thị</p>
+  )}
+</div>
+
     </div>
   );
 };

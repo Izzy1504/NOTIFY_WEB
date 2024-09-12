@@ -360,3 +360,9 @@
     background-color: #fff;
     cursor: pointer;
 }
+@media (max-width: 768px) {
+    .playlist-grid {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
+    }
+  }
+  
