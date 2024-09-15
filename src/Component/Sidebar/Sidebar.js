@@ -9,6 +9,7 @@ const Sidebar = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Thêm trạng thái cho sidebar
   const [playlistData, setPlaylistData] = useState({
     songs: [
       { id: 1, title: 'Đừng làm trái tim anh đau' },
@@ -66,62 +67,71 @@ const Sidebar = () => {
     }
   }, [selectedArtist]);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="sidebar">
-      <div className="sidebar__header">
-        <h2>Trang chủ</h2>
-        <input
-          type="text"
-          placeholder="Tìm kiếm"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+    <div className="sidebar-container">
+      <div className={`sidebar ${isSidebarOpen ? '' : 'closed'}`}>
+        <div className="sidebar__header">
+          <h2>Trang chủ</h2>
+          <input
+            type="text"
+            placeholder="Tìm kiếm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="sidebar__library">
+          <h3 onClick={handleLibraryToggle} className="dropdown-toggle">
+            Thư viện
+          </h3>
+          {isLibraryOpen && (
+            <ul className="dropdown-content">
+              <li onClick={handlePlaylistToggle} className="nested-dropdown-toggle">
+                Playlist
+                {isPlaylistOpen && (
+                  <ul className="nested-dropdown-content">
+                    {playlistData.songs.map(song => (
+                      <li key={song.id} onClick={() => handlePlaylistSelect(song)}>
+                        {song.title}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+              <li onClick={handleArtistToggle} className="nested-dropdown-toggle">
+                Nghệ sĩ
+                {isArtistOpen && (
+                  <ul className="nested-dropdown-content">
+                    {playlistData.artists.map(artist => (
+                      <li key={artist.id} onClick={() => handleArtistSelect(artist)}>
+                        {artist.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            </ul>
+          )}
+        </div>
+        <div className="sidebar__playlists">
+          <h3 onClick={handleLikedSongsToggle} className="dropdown-toggle">
+            Bài hát đã thích
+          </h3>
+          {isLikedSongsOpen && (
+            <ul className="dropdown-content">
+              {playlistData.likedSongs.map(song => (
+                <li key={song.id}>{song.title}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-      <div className="sidebar__library">
-        <h3 onClick={handleLibraryToggle} className="dropdown-toggle">
-          Thư viện
-        </h3>
-        {isLibraryOpen && (
-          <ul className="dropdown-content">
-            <li onClick={handlePlaylistToggle} className="nested-dropdown-toggle">
-              Playlist
-              {isPlaylistOpen && (
-                <ul className="nested-dropdown-content">
-                  {playlistData.songs.map(song => (
-                    <li key={song.id} onClick={() => handlePlaylistSelect(song)}>
-                      {song.title}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-            <li onClick={handleArtistToggle} className="nested-dropdown-toggle">
-              Nghệ sĩ
-              {isArtistOpen && (
-                <ul className="nested-dropdown-content">
-                  {playlistData.artists.map(artist => (
-                    <li key={artist.id} onClick={() => handleArtistSelect(artist)}>
-                      {artist.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          </ul>
-        )}
-      </div>
-      <div className="sidebar__playlists">
-        <h3 onClick={handleLikedSongsToggle} className="dropdown-toggle">
-          Bài hát đã thích
-        </h3>
-        {isLikedSongsOpen && (
-          <ul className="dropdown-content">
-            {playlistData.likedSongs.map(song => (
-              <li key={song.id}>{song.title}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <button onClick={toggleSidebar} className="toggle-sidebar-btn">
+        {isSidebarOpen ? 'Ẩn' : 'Hiện'}
+      </button>
     </div>
   );
 };

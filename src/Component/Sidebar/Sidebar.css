@@ -1,5 +1,10 @@
+.sidebar-container {
+  display: flex;
+  align-items: flex-start;
+}
+
 .sidebar {
-  width: 200px;
+  /* width: 200px; */
   height: calc(100vh - 20px); /* Chiều cao vừa với body, trừ đi padding */
   background-color: #181818;
   color: #fff;
@@ -10,6 +15,20 @@
   flex-direction: column;
   gap: 20px;
   overflow-y: auto; /* Thêm phần scroll để tránh bị out cái phần body như mấy page cũ ( updated : 7/9/24) */
+  transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+.sidebar.closed {
+  transform: translateX(-100%); /* Ẩn sidebar bằng cách dịch chuyển nó ra ngoài màn hình */
+}
+
+.toggle-sidebar-btn {
+  background-color: #181818;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
 .sidebar__header {
@@ -98,13 +117,16 @@ body {
   background-color: #121212;
   color: white;
 }
+
 .volume-icon {
   margin-right: 10px; /* Adjust spacing */
   cursor: pointer;
 }
+
 .time-icon {
   margin-left: 10px; /* Adjust spacing */
 }
+
 .clock-icon {
   margin-right: 10px; /* Adjust spacing */
 }

@@ -31,9 +31,10 @@ const Home = () => {
     navigate('/login');
   };
 
-  const handleAlbumClick = (albumId) => {
-    navigate(`/musicplayer/${albumId}`);
+  const handleAlbumClick = (album) => {
+    navigate(`/musicplayer/${album.id}`, { state: { album } });
   };
+  
 
   // Fetch Spotify access token
   const fetchAccessToken = async () => {
@@ -160,10 +161,10 @@ const Home = () => {
         <div className="playlist-grid">
           {albums.length > 0 ? (
             albums.map((album) => (
-              <div className="playlist" key={album.id} onClick={() => handleAlbumClick(album.id)}>
-                <img src={album.images[0].url} alt={album.name} />
-                <h4>{album.name}</h4>
-              </div>
+              <div className="playlist" key={album.id} onClick={() => handleAlbumClick(album)}>
+              <img src={album.images[0].url} alt={album.name} />
+              <h4>{album.name}</h4>
+            </div>
             ))
           ) : (
             <p>Không có album nào để hiển thị</p>

@@ -1,257 +1,291 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
-  faShuffle,
-  faPlusCircle,
-  faDownload,
-  faEllipsisH,
-  faCheckCircle,
-  faClock,
   faPause,
   faForward,
   faBackward,
   faVolumeUp,
+  faRepeat,
+  faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa"; // Import icons
+import { FaBell, FaUserCircle } from "react-icons/fa";
 import "../Musicplayer/Musicplayer.css";
 import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const MusicPlayer = () => {
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [selectedSong, setSelectedSong] = useState("Đừng Làm Trái Tim Anh Đau"); // Default song
-  const [isPlaying, setIsPlaying] = useState(false); // Track playing state
+  const { albumId } = useParams();
+  const [album, setAlbum] = useState(null); // Thông tin album
+  const [isPlaying, setIsPlaying] = useState(false); // Trạng thái phát nhạc
+  const [currentTrack, setCurrentTrack] = useState(null); // Bài hát hiện tại
+  const [currentTime, setCurrentTime] = useState(0); // Thời gian hiện tại của bài hát
+  const [duration, setDuration] = useState(0); // Tổng thời gian của bài hát
+  const [volume, setVolume] = useState(50); // Volume
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [player, setPlayer] = useState(null); // Spotify Player instance
+  const [deviceId, setDeviceId] = useState(null); // Device ID cho Spotify Player
   const [isRepeat, setIsRepeat] = useState(true); // làm cho repeat
-  const [volume, setVolume] = useState(50); // Volume state
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false); // Volume slider visibility
-
-
-  const toggleUserMenu = () => {
-    setShowUserMenu(!showUserMenu);
-    setShowNotifications(false); // Close notifications pop-up if open
-  };
-
+  const [isBold, setIsBold] = useState(false); //
   const navigate = useNavigate();
-  const handleUser = () => {
-    navigate("/userin");
-  };
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    setShowUserMenu(false); // Close user menu if open
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    navigate("/login");
-  };
+  const [selectedTrack, setSelectedTrack] = useState(null); // State để lưu track được chọn
 
   const togglePlayPause = () => {
-    setIsPlaying(!isPlaying); // Toggle play/pause state
-  };
-  const toggleRotate = () => {
-    setIsRepeat(!isRepeat);
-  };
-  const [isBold, setIsBold] = useState(false);
-
-  // Function to toggle bold effect
-  const toggleBold = () => {
-    setIsBold(!isBold); // Toggle state between true and false
+    if (player) {
+      player.togglePlay().then(() => {
+        setIsPlaying(!isPlaying);
+      });
+    }
   };
 
   const toggleVolumeSlider = () => {
-    setShowVolumeSlider(!showVolumeSlider); // Toggle volume slider visibility
+    setShowVolumeSlider(!showVolumeSlider);
   };
 
   const handleVolumeChange = (event) => {
-    setVolume(event.target.value); // Update volume value
-    console.log("Volume:", event.target.value); // Log current volume value
+    const newVolume = event.target.value;
+    setVolume(newVolume);
+    if (player) {
+      player.setVolume(newVolume / 100); // Chỉnh âm lượng
+    }
+  };
+
+  const toggleRotate = () => {
+    setIsRepeat(!isRepeat);
+  };
+
+  // Fetch Spotify access token
+  const fetchAccessToken = async () => {
+    const clientId = 'd0a4d0901ef24d31b048d5f2ce9e9fee';
+    const clientSecret = 'c5ee7fd1352b424b912e66292e334273';
+    const authString = `${clientId}:${clientSecret}`;
+    const encodedAuthString = btoa(authString);
+
+    try {
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${encodedAuthString}`,
+        },
+        body: 'grant_type=client_credentials',
+      });
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      console.error('Error fetching access token:', error);
+    }
+  };
+
+  // Khởi tạo Spotify Web Playback SDK và kết nối
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      window.onSpotifyWebPlaybackSDKReady = async () => {
+        const token = await fetchAccessToken();
+
+        const playerInstance = new window.Spotify.Player({
+          name: 'Spotify Web Playback SDK',
+          getOAuthToken: cb => { cb(token); },
+          volume: 0.5
+        });
+
+        // Đăng ký sự kiện của player
+        playerInstance.addListener('ready', ({ device_id }) => {
+          console.log('Ready with Device ID', device_id);
+          setDeviceId(device_id);
+        });
+
+        playerInstance.addListener('not_ready', ({ device_id }) => {
+          console.log('Device ID has gone offline', device_id);
+        });
+
+        playerInstance.addListener('player_state_changed', (state) => {
+          if (!state) return;
+          setCurrentTrack(state.track_window.current_track);
+          setIsPlaying(!state.paused);
+          setDuration(state.duration);
+          setCurrentTime(state.position);
+        });
+
+        // Kết nối với player
+        playerInstance.connect();
+        setPlayer(playerInstance);
+      };
+    };
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const toggleBold = () => {
+    const trackElement = document.querySelector('.track-list-item.active');
+    if (trackElement) {
+      trackElement.classList.toggle('bold');
+    }
+  };
+
+  // Fetch album data from Spotify API
+  useEffect(() => {
+    const fetchAlbumData = async () => {
+      try {
+        const accessToken = await fetchAccessToken();
+        if (!accessToken) return;
+
+        const albumResponse = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const albumData = await albumResponse.json();
+        setAlbum(albumData);
+      } catch (error) {
+        console.error('Error fetching album data:', error);
+      }
+    };
+
+    if (albumId) {
+      fetchAlbumData();
+    }
+  }, [albumId]);
+
+  // Chọn bài hát để phát
+  const selectTrack = (track) => {
+    setCurrentTrack(track);
+    setIsPlaying(true);
+    if (player) {
+      player._options.getOAuthToken(async (token) => {
+        await fetch(
+          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+          {
+            method: 'PUT',
+            body: JSON.stringify({
+              uris: [track.uri], // Phát bài hát đã chọn
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      });
+    }
+    setSelectedTrack(track);
+  };
+
+  // Xử lý khi thanh seek bar thay đổi
+  const handleSeekChange = (event) => {
+    const seekTime = event.target.value;
+    setCurrentTime(seekTime);
+    if (player) {
+      player.seek(seekTime * 1000); // Chuyển thời gian phát nhạc
+    }
   };
 
   return (
     <div className="Music">
       <div className="Home__header">
-        <h2>Now Playing: {selectedSong}</h2>
+        <h2>Now Playing: {album ? album.name : "Loading..."}</h2>
         <div className="header-right">
-          <div className="notification-icon" onClick={toggleNotifications}>
+          <div className="notification-icon">
             <FaBell size={25} />
-            {showNotifications && (
-              <div className="notification-popup">
-                <h4>Thông báo</h4>
-                <p>Bạn có 1 tin nhắn mới</p>
-                <p>Thông báo về bài hát mới</p>
-                <p>Cập nhật tính năng mới</p>
-              </div>
-            )}
           </div>
-          <div className="user-circle" onClick={toggleUserMenu}>
+          <div className="user-circle">
             <FaUserCircle size={30} />
-            {showUserMenu && (
-              <div className="user-menu">
-                <div className="user-menu-item" onClick={handleUser}>
-                  <span>Tài khoản</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Hồ sơ</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Chế độ nghe riêng tư</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Cài đặt</span>
-                </div>
-                <div className="user-menu-item" onClick={handleLogout}>
-                  <FaSignOutAlt /> Đăng xuất
-                </div>
+          </div>
+        </div>
+      </div>
+
+      {album ? (
+        <div className="album-info">
+          <img
+            className="album-art"
+            src={album.images[0].url}
+            alt={album.name}
+          />
+          <div className="album-details">
+            <h1>{album.name}</h1>
+            <p>{album.artists[0].name} • {album.release_date} • {album.total_tracks} songs</p>
+          </div>
+
+          {/* Hiển thị danh sách bài hát */}
+          <div className="track-list">
+            {album.tracks.items.map((track, index) => (
+              <div key={index} className="track-item" onClick={() => selectTrack(track)}>
+                <span>{track.track_number}. {track.name}</span>
               </div>
-            )}
+            ))}
           </div>
         </div>
+      ) : (
+        <p>Loading album data...</p>
+      )}
+
+{album && (
+  <div className="bottom-bar">
+    <div className="bottom-bar-left">
+      <img
+        className="bottom-album-art"
+        src={album.images[0].url}
+        alt={album.name}
+      />
+      <div className="bottom-song-info">
+        <h4>Now Playing: {selectedTrack ? selectedTrack.name : "Loading..."}</h4>
+        <p>{album.artists[0].name}</p>
       </div>
-
-      <div className="album-info">
-        <img
-          className="album-art"
-          src="https://i.scdn.co/image/ab67616d00001e02a1bc26cdd8eecd89da3adc39"
-          alt="Album Art"
-        />
-        <div className="album-details">
-          <h1>Đừng Làm Trái Tim Anh Đau</h1>
-          <p>Sơn Tùng M-TP • 2024 • 1 song, 4 min 39 sec</p>
+    </div>
+    <div className="bottom-controls">
+      <button className="control-button" onClick={toggleBold}>
+        <FontAwesomeIcon icon={faShuffle} className={isBold ? "bold-icon" : ""} />
+      </button>
+      <button className="control-button">
+        <FontAwesomeIcon icon={faBackward} />
+      </button>
+      <button className="control-button" onClick={togglePlayPause}>
+        <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
+      </button>
+      <button className="control-button">
+        <FontAwesomeIcon icon={faForward} />
+      </button>
+      <button className="control-button" onClick={toggleRotate}>
+        <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"}></i>
+      </button>
+    </div>
+    {currentTrack && (
+      <div className="seek-bar-container">
+        <div className="time-info">
+          <FontAwesomeIcon icon={faVolumeUp} className="volume-icon" />
+          <span>{Math.floor(currentTime / 60)}:{("0" + Math.floor(currentTime % 60)).slice(-2)}</span>
+          <input
+            type="range"
+            min="0"
+            max={duration / 1000} // Chuyển từ ms sang giây
+            value={currentTime}
+            onChange={handleSeekChange}
+            className="seek-bar"
+          />
+          <span>{Math.floor(duration / 60000)}:{("0" + Math.floor((duration % 60000) / 1000)).slice(-2)}</span>
         </div>
+        {showVolumeSlider && (
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={handleVolumeChange}
+            className="volume-slider"
+          />
+        )}
       </div>
-
-      <div className="controls">
-        <button className="control-button" onClick={togglePlayPause}>
-          <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
-        </button>
-        <button className="control-button" onClick={toggleBold}>
-          <FontAwesomeIcon
-            icon={faShuffle}
-            className={isBold ? "Bold-icon" : ""}
-          />
-        </button>
-        <button className="control-button">
-          <FontAwesomeIcon icon={faPlusCircle} />
-        </button>
-        <button className="control-button">
-          <FontAwesomeIcon icon={faDownload} />
-        </button>
-        <button className="control-button">
-          <FontAwesomeIcon icon={faEllipsisH} />
-        </button>
-      </div>
-
-      <table className="song-list">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Plays</th>
-            <th>
-              <FontAwesomeIcon icon={faClock} />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Đừng Làm Trái Tim Anh Đau</td>
-            <td>23,113,266</td>
-            <td>
-              <FontAwesomeIcon icon={faCheckCircle} /> 4:39
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div className="more-music">
-        <h2>More by Sơn Tùng M-TP</h2>
-        <div className="album-thumbnails">
-          <img
-            src="https://i.scdn.co/image/ab67616d00001e02b5a7da0c97f51481d6f7a3c6"
-            alt="Album Thumbnail"
-          />
-          <img
-            src="https://i.scdn.co/image/ab67616d00001e022cd9649ea111a552283f0165"
-            alt="Album Thumbnail"
-          />
-          <img
-            src="https://i.scdn.co/image/ab67616d00001e020121ea113166222d5c743e2e"
-            alt="Album Thumbnail"
-          />
-        </div>
-      </div>
-
-      {/* Bottom Playback Bar */}
-      <div className="bottom-bar">
-        <div className="bottom-bar-left">
-          <img
-            src="https://i.scdn.co/image/ab67616d00001e02a1bc26cdd8eecd89da3adc39"
-            alt="Playing"
-            className="bottom-album-art"
-          />
-          <div className="bottom-song-info">
-            <h4>Đừng Làm Trái Tim Anh Đau</h4>
-            <p>Sơn Tùng M-TP</p>
-          </div>
-        </div>
-        <div className="bottom-controls">
-          <button className="control-button" onClick={toggleBold}>
-            <FontAwesomeIcon
-              icon={faShuffle}
-              className={isBold ? "bold-icon" : ""}
-            />
-          </button>
-          <button className="control-button">
-            <FontAwesomeIcon icon={faBackward} />
-          </button>
-          <button className="control-button" onClick={togglePlayPause}>
-            <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
-          </button>
-          <button className="control-button">
-            <FontAwesomeIcon icon={faForward} />
-          </button>
-          <button className="control-button" onClick={toggleRotate}>
-            {/* <FontAwesomeIcon icon={isRepeat ? faRepeat : faRetweet} /> */}
-            <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"}></i>
-          </button>
-        </div>
-
-        {/* Add Volume and Time Icons */}
-        <div className="bottom-progress">
-          {/* Volume icon */}
-          <FontAwesomeIcon
-            icon={faVolumeUp}
-            className="volume-icon"
-            onClick={toggleVolumeSlider}
-          />
-
-          {/* Thanh trượt âm lượng sẽ hiển thị khi showVolumeSlider = true */}
-          {showVolumeSlider && (
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="volume-slider"
-            />
-          )}
-          {/* Volume icon */}
-          <FontAwesomeIcon icon={faClock} className="clock-icon" />
-           {/* clock icon */}
-          <span>0:46</span>
-          <div className="progress-bar">
-            <div className="progress-filled"></div>
-          </div>
-          <span>4:18</span>
-          <FontAwesomeIcon icon={faClock} className="time-icon" />{" "}
-          {/* Time icon */}
-        </div>
-      </div>
+    )}
+  </div>
+)}
     </div>
   );
 };

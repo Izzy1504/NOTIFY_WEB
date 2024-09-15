@@ -169,7 +169,6 @@
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
-    
 }
 
 .control-button {
@@ -180,7 +179,6 @@
     cursor: pointer;
     color: #fff;
     transition: transform 0.2s; /* Add smooth hover transition */
-    
 }
 
 .control-button:hover {
@@ -241,7 +239,7 @@
 
 /* Bottom Playback Bar */
 .bottom-bar {
-    position: fixed;
+    /* position: fixed; */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -281,57 +279,56 @@
 .bottom-controls {
     display: flex;
     align-items: center;
+    justify-content: center; /* Căn giữa các nút điều khiển */
+    flex: 1; /* Để các nút điều khiển chiếm không gian còn lại */
 }
 
 .bottom-controls .control-button {
     padding: 10px;
     font-size: 15px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin: 0 5px; /* Khoảng cách giữa các nút điều khiển */
     justify-content: center;
     align-items: center;
 }
 
-
-.bottom-progress {
+.seek-bar-container {
     display: flex;
     align-items: center;
+    margin-left: auto;
 }
 
-.progress-bar {
+.seek-bar {
     width: 200px;
-    height: 5px;
+    margin: 0 10px;
     background-color: #333;
     border-radius: 3px;
-    margin: 0 10px;
 }
 
-.progress-filled {
-    width: 30%;
-    height: 100%;
-    background-color: white;
-    border-radius: 3px;
-}
-
-.bottom-progress span {
+.time-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
     font-size: 12px;
 }
-.bold-icon {
-  font-weight: bold; /* Apply bold weight */
-  color: #eef1f1; /* Optional: Change color to emphasize */
-  transform: scale(1.2); /* Optional: Slightly increase the size */
-  transition: transform 0.2s, color 0.2s; /* Smooth transition for the effects */
+
+.volume-icon {
+    cursor: pointer;
+    margin-right: 10px;
 }
+
+.bold-icon {
+    font-weight: bold; /* Apply bold weight */
+    color: #eef1f1; /* Optional: Change color to emphasize */
+    transform: scale(1.2); /* Optional: Slightly increase the size */
+    transition: transform 0.2s, color 0.2s; /* Smooth transition for the effects */
+}
+
 /* CSS cho thanh trượt âm lượng */
 .volume-slider {
-    /* position: absolute;
-    top: -30px; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px; */
     cursor: pointer;
     background-color: #cbe2e2;
-    /* -webkit-appearance: ; */
     height: 5px;
     border-radius: 5px;
     outline: none;
@@ -360,9 +357,105 @@
     background-color: #fff;
     cursor: pointer;
 }
+
 @media (max-width: 768px) {
     .playlist-grid {
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
     }
-  }
-  
+}
+
+.album-info {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    background-color: #0f0f0f;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.album-art {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+}
+
+.album-details {
+    margin-left: 20px;
+}
+
+.track-list {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.track-item {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #0f0f0f;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.track-item:hover {
+    background-color: #c0c0c0;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.control-button {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.control-button:hover {
+    background-color: #404040;
+}
+
+.bottom-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.volume-icon {
+    cursor: pointer;
+}
+
+.volume-slider {
+    margin-left: 10px;
+    width: 100px;
+}
+
+.seek-bar-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.seek-bar {
+    width: 200px;
+    margin: 0 10px;
+    background-color: #333;
+    border-radius: 3px;
+}
+
+.time-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    font-size: 12px;
+}
