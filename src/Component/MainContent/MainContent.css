@@ -5,62 +5,61 @@
   color: #fff;
   border-radius: 15px;
   overflow-y: auto;
-  }
-  .login-type{
+}
+.login-type {
+  background-color: #f4e8e8; /* Màu nền xám */
+  padding: 5px 20px; /* Khoảng cách bên trong khung */
+  border-radius: 10px; /* Bo góc khung */
+  border: 1px solid #ccc; /* Viền xung quanh khung */
+  gap: 20px;
+}
 
-      background-color: #f4e8e8; /* Màu nền xám */
-      padding: 5px 20px; /* Khoảng cách bên trong khung */
-      border-radius: 10px; /* Bo góc khung */
-      border: 1px solid #ccc; /* Viền xung quanh khung */
-      gap:20px;
-    }
-  
-  .main-content__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .main-content__header h2 {
-    margin: 0;
-  }
-  
-  .main-content__playlists {
-    margin-top: 20px;
-  }
-  
-  .main-content__playlists h3 {
-    margin-bottom: 20px;
-  }
-  
-  .playlist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-  }
-  
-  .playlist {
-    background-color: #181818;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    transition: transform 0.2s;
-  }
-  
-  .playlist:hover {
-    transform: scale(1.05);
-  }
-  
-  .playlist img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  .playlist h4 {
-    margin-top: 10px;
-    font-size: 1em;
-  }
-  .login-type:hover {
-    transform: scale(1.05);
-  }
+.main-content__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.main-content__header h2 {
+  margin: 0;
+}
+
+.main-content__playlists {
+  margin-top: 20px;
+}
+
+.main-content__playlists h3 {
+  margin-bottom: 20px;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.playlist {
+  background-color: #181818;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.playlist:hover {
+  transform: scale(1.05);
+}
+
+.playlist img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.playlist h4 {
+  margin-top: 10px;
+  font-size: 1em;
+}
+.login-type:hover {
+  transform: scale(1.05);
+}

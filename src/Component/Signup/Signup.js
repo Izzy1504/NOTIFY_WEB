@@ -41,6 +41,10 @@ const SignupForm = () => {
             });
     };
 
+    const loginButton = () => {
+        navigate('/login')
+    }
+
     return (
         <div className="signup-page">
             <div className="signup-container">
@@ -92,7 +96,7 @@ const SignupForm = () => {
                         </div>
                     </div>
                     <div className="login-text">
-                        <p>Already a member? <a href="#">Login now</a></p>
+                        <p>Already a member? <button onClick={loginButton}>Login now</button></p>
                     </div>
                 </form>
             </div>
