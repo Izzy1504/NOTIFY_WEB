@@ -1,174 +1,174 @@
 .Music {
-    flex: 1;
-    padding: 20px;
-    background-color: #282828;
-    color: #fff;
-    border-radius: 15px;
-    overflow-y: auto;
+  flex: 1;
+  padding: 20px;
+  background-color: #282828;
+  color: #fff;
+  border-radius: 15px;
+  overflow-y: auto;
 }
 
 .login-type {
-    background-color: #f4e8e8; /* Màu nền xám */
-    padding: 5px 20px; /* Khoảng cách bên trong khung */
-    border-radius: 10px; /* Bo góc khung */
-    border: 1px solid #ccc; /* Viền xung quanh khung */
-    gap: 20px;
+  background-color: #f4e8e8; /* Màu nền xám */
+  padding: 5px 20px; /* Khoảng cách bên trong khung */
+  border-radius: 10px; /* Bo góc khung */
+  border: 1px solid #ccc; /* Viền xung quanh khung */
+  gap: 20px;
 }
 
 .Home__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .Home__header h2 {
-    margin: 0;
+  margin: 0;
 }
 
 .Home__playlists {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .Home__playlists h3 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .playlist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
 }
 
 .playlist {
-    background-color: #181818;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    transition: transform 0.2s;
+  background-color: #181818;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s;
 }
 
 .playlist:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .playlist img {
-    width: 100%;
-    border-radius: 10px;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .playlist h4 {
-    margin-top: 10px;
-    font-size: 1em;
+  margin-top: 10px;
+  font-size: 1em;
 }
 
 .login-type:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 /* Thêm CSS cho notification icon và user circle */
 .header-right {
-    display: flex;
-    align-items: center; /* Căn giữa các icon theo trục dọc */
-    gap: 20px; /* Tạo khoảng cách giữa các icon */
+  display: flex;
+  align-items: center; /* Căn giữa các icon theo trục dọc */
+  gap: 20px; /* Tạo khoảng cách giữa các icon */
 }
 
 .notification-icon {
-    cursor: pointer;
-    position: relative;
+  cursor: pointer;
+  position: relative;
 }
 
 .notification-popup {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #333;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    color: white;
-    width: 250px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #333;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  color: white;
+  width: 250px;
 }
 
 .notification-popup h4 {
-    margin: 0 0 10px;
-    border-bottom: 1px solid #555;
-    padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
 }
 
 .notification-popup p {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 .user-circle {
-    cursor: pointer;
-    position: relative;
+  cursor: pointer;
+  position: relative;
 }
 
 .user-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #333;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    color: white;
-    width: 200px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #333;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  color: white;
+  width: 200px;
 }
 
 .user-menu-item {
-    padding: 10px 0;
-    cursor: pointer;
-    border-bottom: 1px solid #555;
+  padding: 10px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #555;
 }
 
 .user-menu-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .user-menu-item:hover {
-    background-color: #444;
+  background-color: #444;
 }
 
 .user-menu-item span {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 /* Album Information */
 .album-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .album-art {
-    width: 200px;
-    height: 200px;
-    border-radius: 8px;
-    margin-right: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  margin-right: 20px;
 }
 
 .album-details h1 {
-    font-size: 36px;
-    margin: 0;
+  font-size: 36px;
+  margin: 0;
 }
 
 .album-details p {
-    font-size: 18px;
-    margin: 10px 0 0;
-    color: #b3b3b3;
+  font-size: 18px;
+  margin: 10px 0 0;
+  color: #b3b3b3;
 }
 
 /* Controls */
 .controls {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .control-button {
@@ -179,67 +179,69 @@
     cursor: pointer;
     color: #fff;
     transition: transform 0.2s; /* Add smooth hover transition */
+    
 }
 
 .control-button:hover {
-    background-color: #343636;
-    transform: scale(1.1); /* Slightly scale on hover */
+  background-color: #343636;
+  transform: scale(1.1); /* Slightly scale on hover */
 }
 
 /* Song List */
 .song-list {
-    width: 100%;
-    margin-bottom: 20px;
-    border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
 }
 
-.song-list th, .song-list td {
-    padding: 10px;
-    text-align: left;
+.song-list th,
+.song-list td {
+  padding: 10px;
+  text-align: left;
 }
 
 .song-list th {
-    color: #b3b3b3;
-    font-weight: normal;
+  color: #b3b3b3;
+  font-weight: normal;
 }
 
 .song-list tr {
-    border-bottom: 1px solid #333;
+  border-bottom: 1px solid #333;
 }
 
 .song-list tr:hover {
-    background-color: #2a2a2a;
+  background-color: #2a2a2a;
 }
 
 .song-list td {
-    color: #fff;
+  color: #fff;
 }
 
 /* More Music */
 .more-music h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .album-thumbnails {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .album-thumbnails img {
-    width: 150px;
-    height: 150px;
-    border-radius: 8px;
-    transition: transform 0.2s; /* Add smooth hover transition */
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  transition: transform 0.2s; /* Add smooth hover transition */
 }
 
 .album-thumbnails img:hover {
-    transform: scale(1.05); /* Slightly scale on hover */
+  transform: scale(1.05); /* Slightly scale on hover */
 }
 
 /* Bottom Playback Bar */
 .bottom-bar {
-    /* position: fixed; */
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -254,62 +256,64 @@
 }
 
 .bottom-bar-left {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .bottom-album-art {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 8px;
 }
 
 .bottom-song-info h4 {
-    margin: 0;
-    font-size: 16px;
+  margin: 0;
+  font-size: 16px;
 }
 
 .bottom-song-info p {
-    margin: 0;
-    font-size: 12px;
-    color: #aaa;
+  margin: 0;
+  font-size: 12px;
+  color: #aaa;
 }
 
 .bottom-controls {
     display: flex;
     align-items: center;
-    justify-content: center; /* Căn giữa các nút điều khiển */
-    flex: 1; /* Để các nút điều khiển chiếm không gian còn lại */
 }
 
 .bottom-controls .control-button {
     padding: 10px;
     font-size: 15px;
     border-radius: 50%;
-    margin: 0 5px; /* Khoảng cách giữa các nút điều khiển */
+    margin-right: 10px;
     justify-content: center;
     align-items: center;
 }
 
-.seek-bar-container {
+
+.bottom-progress {
     display: flex;
     align-items: center;
-    margin-left: auto;
 }
 
-.seek-bar {
+.progress-bar {
     width: 200px;
-    margin: 0 10px;
+    height: 5px;
     background-color: #333;
+    border-radius: 3px;
+    margin: 0 10px;
+}
+
+.progress-filled {
+    width: 30%;
+    height: 100%;
+    background-color: white;
     border-radius: 3px;
 }
 
-.time-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: auto;
+.bottom-progress span {
     font-size: 12px;
 }
 
@@ -327,8 +331,14 @@
 
 /* CSS cho thanh trượt âm lượng */
 .volume-slider {
+    /* position: absolute;
+    top: -30px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px; */
     cursor: pointer;
     background-color: #cbe2e2;
+    /* -webkit-appearance: ; */
     height: 5px;
     border-radius: 5px;
     outline: none;
@@ -337,125 +347,30 @@
 }
 
 .volume-slider:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: #fff;
-    cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .volume-slider::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: #fff;
-    cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
     .playlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
     }
-}
-
-.album-info {
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    background-color: #0f0f0f;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.album-art {
-    width: 200px;
-    height: 200px;
-    border-radius: 10px;
-}
-
-.album-details {
-    margin-left: 20px;
-}
-
-.track-list {
-    margin-top: 20px;
-    width: 100%;
-}
-
-.track-item {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #0f0f0f;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-}
-
-.track-item:hover {
-    background-color: #c0c0c0;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.control-button {
-    background-color: #282828;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.control-button:hover {
-    background-color: #404040;
-}
-
-.bottom-progress {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.volume-icon {
-    cursor: pointer;
-}
-
-.volume-slider {
-    margin-left: 10px;
-    width: 100px;
-}
-
-.seek-bar-container {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-
-.seek-bar {
-    width: 200px;
-    margin: 0 10px;
-    background-color: #333;
-    border-radius: 3px;
-}
-
-.time-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: auto;
-    font-size: 12px;
-}
+  }
+  
