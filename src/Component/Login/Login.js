@@ -1,36 +1,40 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
+import axios from "axios";
 
 const LoginForm = () => {
   const navigate = useNavigate();
 
-  const [user_name, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const [user_name, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const onSubmit = async (event) => {
     event.preventDefault(); // Prevent form from refreshing the page
 
     try {
       // Corrected axios.post call
-      const response = await axios.post("http://localhost:3001/login", { user_name, password, email });
+      const response = await axios.post("http://localhost:3001/login", {
+        user_name,
+        password,
+        email,
+      });
 
       if (response.status === 200) {
         // Navigate to the dashboard
-        navigate('/home');
+        navigate("/home");
       }
     } catch (err) {
       // Set error message if login fails
       setError("Invalid username or password! Please try again.");
       console.error(err);
     }
-  }
+  };
 
   const handleSignupClick = () => {
-    navigate('/signup'); // Navigate to the Signup page
+    navigate("/signup"); // Navigate to the Signup page
   };
 
   return (
@@ -66,7 +70,9 @@ const LoginForm = () => {
             />
           </div>
           {error && <p className="error-message">{error}</p>}
-          <button type="submit" className="login-btn">Login</button>
+          <button type="submit" className="login-btn">
+            Login
+          </button>
           <div className="social-login">
             <p>Or login with</p>
             <div className="social-buttons">
@@ -75,7 +81,12 @@ const LoginForm = () => {
             </div>
           </div>
           <div className="signup-text">
-            <p>Not a member? <button type="button" onClick={handleSignupClick}>Signup now</button></p>
+            <p>
+              Not a member?{" "}
+              <button type="button" onClick={handleSignupClick}>
+                Signup now
+              </button>
+            </p>
           </div>
         </form>
       </div>

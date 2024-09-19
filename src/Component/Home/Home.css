@@ -30,7 +30,10 @@
 
 .playlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Layout dạng lưới cho playlist */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); /* Layout dạng lưới cho playlist */
   gap: 20px;
 }
 
@@ -59,7 +62,10 @@
 
 .section-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Dạng lưới cho các phần Jump back in và Recently played */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(150px, 1fr)
+  ); /* Dạng lưới cho các phần Jump back in và Recently played */
   gap: 20px;
 }
 
@@ -118,7 +124,7 @@
   width: 200px;
 }
 
-.user-menu-item,  
+.user-menu-item,
 .notification-popup p {
   padding: 10px 0;
   cursor: pointer;
@@ -136,6 +142,9 @@
 }
 @media (max-width: 768px) {
   .playlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Điều chỉnh kích thước hình album cho di động */
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(100px, 1fr)
+    ); /* Điều chỉnh kích thước hình album cho di động */
   }
 }
