@@ -48,7 +48,10 @@
 .sidebar__library,
 .sidebar__playlists {
   margin-top: 20px;
+  padding: 10px;
   border-radius: 10px;
+  background-color: #181818; /* Light background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .sidebar__library h3,
@@ -56,35 +59,32 @@
   margin-bottom: 10px;
   cursor: pointer;
   border-radius: 10px;
+  padding: 10px;
+  background-color: #007bff; /* Background color for headers */
+  color: #fff; /* Text color for headers */
 }
 
 .sidebar__library ul,
 .sidebar__playlists ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar__library ul li,
 .sidebar__playlists ul li {
   margin-bottom: 10px;
-}
-
-.dropdown-toggle {
-  cursor: pointer;
-  background-color: #282828;
-  padding: 10px;
+  padding: 8px;
   border-radius: 5px;
-}
-
-.dropdown-content {
-  background-color: #6b6c6e;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.dropdown-content li {
-  padding: 5px 0;
+  background-color: #181818; /* Background color for list items */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for list items */
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar__library ul li:hover,
+.sidebar__playlists ul li:hover {
+  background-color: #e9e9e9; /* Hover background color for list items */
 }
 
 .nested-dropdown-toggle {
@@ -92,14 +92,12 @@
   background-color: #282828;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 10px;
 }
 
 .nested-dropdown-content {
-  background-color: #57595b;
+  background-color: #6b6c6e;
   padding: 10px;
   border-radius: 10px;
-  margin-top: 5px;
 }
 
 .nested-dropdown-content li {
@@ -129,4 +127,21 @@ body {
 
 .clock-icon {
   margin-right: 10px; /* Adjust spacing */
+}
+.home-link {
+  text-decoration: none;
+}
+.home-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f3f7f7; /* Change this to your desired color */
+  transition: color 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.home-title:hover {
+  color: #9ceffa; /* Change this to your desired hover color */
+  transform: scale(1.05);
+}
+.dropdown-toggle:hover {
+  background-color: #525050;
 }

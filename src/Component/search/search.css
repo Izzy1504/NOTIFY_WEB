@@ -1,0 +1,168 @@
+.Home {
+    flex: 1;
+    padding: 20px;
+    background-color: #121212; /* Giống nền Spotify */
+    color: #fff;
+    border-radius: 15px;
+    overflow-y: auto;
+  }
+  
+  .Home__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .Home__header h2 {
+    margin: 0;
+    font-size: 1.5em;
+  }
+  
+  .Home__section-title {
+    margin: 20px 0;
+    font-size: 1.2em;
+  }
+  
+  .Home__playlists {
+    margin-top: 20px;
+  }
+  
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    ); /* Layout dạng lưới cho playlist */
+    gap: 20px;
+  }
+  
+  .playlist {
+    background-color: #181818;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .playlist:hover {
+    transform: scale(1.05);
+  }
+  
+  .playlist img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .playlist h4 {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #b3b3b3;
+  }
+  
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    ); /* Dạng lưới cho các phần Jump back in và Recently played */
+    gap: 20px;
+  }
+  
+  .section-grid-item {
+    background-color: #181818;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .section-grid-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .section-grid-item img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .section-grid-item h4 {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #b3b3b3;
+  }
+  
+  /* User icon and notification popup */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .notification-icon,
+  .user-circle {
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .notification-popup,
+  .user-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    color: white;
+    width: 250px;
+  }
+  
+  .user-menu {
+    width: 200px;
+  }
+  
+  .user-menu-item,
+  .notification-popup p {
+    padding: 10px 0;
+    cursor: pointer;
+    border-bottom: 1px solid #555;
+  }
+  
+  .user-menu-item:last-child,
+  .notification-popup p:last-child {
+    border-bottom: none;
+  }
+  
+  .user-menu-item:hover,
+  .notification-popup p:hover {
+    background-color: #444;
+  }
+  @media (max-width: 768px) {
+    .playlist-grid {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(100px, 1fr)
+      ); /* Điều chỉnh kích thước hình album cho di động */
+    }
+  }
+  .search-form {
+    display: flex;
+    flex-direction: column; /* Change to column to stack elements vertically */
+    align-items: flex-start; /* Align items to the start of the form */
+    margin-bottom: 16px;
+  }
+  
+  .search-label {
+    font-size: 16px;
+    color: #333; /* Adjust this to match the text color of your page */
+  }
+  
+  .search-display {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333; /* Adjust this to match the text color of your page */
+    background-color: transparent; /* Make background transparent */
+  }
