@@ -10,7 +10,7 @@ import {
   faRepeat,
   faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaBell, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaUserCircle,FaSignOutAlt } from "react-icons/fa";
 import "../Musicplayer/Musicplayer.css";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,6 +31,29 @@ const MusicPlayer = () => {
   const [isBold, setIsBold] = useState(false); //
   const navigate = useNavigate();
   const [selectedTrack, setSelectedTrack] = useState(null); // State để lưu track được chọn
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  //pop up menu
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+    setShowNotifications(false);
+  };
+
+  const handdleuser = () => {
+    navigate('/userin');
+  };
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    setShowUserMenu(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    navigate('/login');
+  };
+
 
   const togglePlayPause = () => {
     if (player) {
@@ -193,12 +216,40 @@ const MusicPlayer = () => {
       <div className="Home__header">
         <h2>Now Playing: {album ? album.name : "Loading..."}</h2>
         <div className="header-right">
-          <div className="notification-icon">
+          <div className="notification-icon" onClick={toggleNotifications}>
             <FaBell size={25} />
+            {showNotifications && (
+              <div className="notification-popup">
+                <h4>Thông báo</h4>
+                <p>Bạn có 1 tin nhắn mới</p>
+                <p>Thông báo về bài hát mới</p>
+                <p>Cập nhật tính năng mới</p>
+              </div>
+            )}
           </div>
-          <div className="user-circle">
+          <div className="user-circle" onClick={toggleUserMenu}>
             <FaUserCircle size={30} />
+            {showUserMenu && (
+              <div className="user-menu">
+                <div className="user-menu-item" onClick={handdleuser}>
+                  <span>Tài khoản</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Hồ sơ</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Chế độ nghe riêng tư</span>
+                </div>
+                <div className="user-menu-item">
+                  <span>Cài đặt</span>
+                </div>
+                <div className="user-menu-item" onClick={handleLogout}>
+                  <FaSignOutAlt /> Đăng xuất
+                </div>
+              </div>
+            )}
           </div>
+         
         </div>
       </div>
 

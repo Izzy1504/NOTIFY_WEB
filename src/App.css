@@ -4,3 +4,8 @@
   padding: 10px; /* Add some padding around the app container */
   background-color: #121212; /* Match the main content background color */
 }
+
+  body {
+    background-color: #121212 !important;
+  }
+
