@@ -7,6 +7,8 @@ import Home from './Component/Home/Home.js';
 import Signup from './Component/Signup/Signup.js';
 import Userin from './Component/Userinfo/Userin.js';
 import Musicplayer from './Component/Musicplayer/Musicplayer.js';
+import Search from './Component/search/search.jsx';
+import { SearchProvider } from './context/SearchContext';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
@@ -53,7 +55,7 @@ function App() {
   return (
     <div className="app">
       {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/userin' && <Sidebar />}
-      
+      <SearchProvider>
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
@@ -61,7 +63,9 @@ function App() {
         <Route path="/musicplayer/:albumId" element={<Musicplayer player={player} />} />
         <Route path="/userin" element={<Userin />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
+    </SearchProvider>
     </div>
   );
 }

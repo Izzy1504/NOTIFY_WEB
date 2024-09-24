@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import '../Sidebar/Sidebar.css';
+import { SearchContext } from '../../context/SearchContext';
 
 const Sidebar = () => {
   const [isLikedSongsOpen, setIsLikedSongsOpen] = useState(false);
@@ -9,24 +11,8 @@ const Sidebar = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Thêm trạng thái cho sidebar
-  const [playlistData, setPlaylistData] = useState({
-    songs: [
-      { id: 1, title: 'Đừng làm trái tim anh đau' },
-      { id: 2, title: 'Sơn Tùng và các bài hát khác' },
-      { id: 3, title: 'Vũ.' },
-      { id: 4, title: 'RPT MCK' },
-      { id: 5, title: 'RAP VIỆT' },
-    ],
-    artists: [
-      { id: 1, name: 'Sơn Tùng' },
-    ],
-    likedSongs: [
-      { id: 1, title: 'Em của ngày hôm qua' },
-      { id: 2, title: 'Hãy trao cho anh' },
-      { id: 3, title: 'Lạc trôi' },
-    ],
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   const handleLikedSongsToggle = () => {
     setIsLikedSongsOpen(!isLikedSongsOpen);
@@ -54,39 +40,56 @@ const Sidebar = () => {
     setIsArtistOpen(false);
   };
 
-  useEffect(() => {
-    if (selectedArtist) {
-      fetch(`https://api.example.com/artist/${selectedArtist.id}`)
-        .then(response => response.json())
-        .then(data => {
-          console.log('Artist info:', data);
-        })
-        .catch(error => {
-          console.error('Error fetching artist info:', error);
-        });
-    }
-  }, [selectedArtist]);
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/search?query=${searchTerm}`);
+  };
+  const handleHomeClick = () => {
+    navigate('/home');
+  };
+  const playlistData = {
+    songs: [
+      { id: 1, title: 'Đừng làm trái tim anh đau' },
+      { id: 2, title: 'Sơn Tùng và các bài hát khác' },
+      { id: 3, title: 'Vũ.' },
+      { id: 4, title: 'RPT MCK' },
+      { id: 5, title: 'RAP VIỆT' },
+    ],
+    artists: [
+      { id: 1, name: 'Sơn Tùng' },
+    ],
+    likedSongs: [
+      { id: 1, title: 'Em của ngày hôm qua' },
+      { id: 2, title: 'Hãy trao cho anh' },
+      { id: 3, title: 'Lạc trôi' },
+    ],
+  };
   return (
     <div className="sidebar-container">
       <div className={`sidebar ${isSidebarOpen ? '' : 'closed'}`}>
         <div className="sidebar__header">
-          <h2>Trang chủ</h2>
-          <input
-            type="text"
-            placeholder="Tìm kiếm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div onClick={handleHomeClick} className="home-button">
+            <h2 className="home-title">Trang chủ</h2>
+          </div>
+          
+          <form onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {/* <button type="submit">Search</button> */}
+          </form>
         </div>
         <div className="sidebar__library">
-          <h3 onClick={handleLibraryToggle} className="dropdown-toggle">
+          <h5 onClick={handleLibraryToggle} className="dropdown-toggle">
             Thư viện
-          </h3>
+          </h5>
           {isLibraryOpen && (
             <ul className="dropdown-content">
               <li onClick={handlePlaylistToggle} className="nested-dropdown-toggle">
@@ -117,9 +120,9 @@ const Sidebar = () => {
           )}
         </div>
         <div className="sidebar__playlists">
-          <h3 onClick={handleLikedSongsToggle} className="dropdown-toggle">
+          <h5 onClick={handleLikedSongsToggle} className="dropdown-toggle">
             Bài hát đã thích
-          </h3>
+          </h5>
           {isLikedSongsOpen && (
             <ul className="dropdown-content">
               {playlistData.likedSongs.map(song => (
@@ -129,9 +132,9 @@ const Sidebar = () => {
           )}
         </div>
       </div>
-      <button onClick={toggleSidebar} className="toggle-sidebar-btn">
-        {isSidebarOpen ? 'Ẩn' : 'Hiện'}
-      </button>
+        {/* <button onClick={toggleSidebar} className="toggle-sidebar-btn">
+          {isSidebarOpen ? 'Ẩn' : 'Hiện'}
+        </button> */}
     </div>
   );
 };
