@@ -20,21 +20,36 @@
 }
 
 .Home__section-title {
-  margin: 20px 0;
+  margin-bottom: 10px;
   font-size: 1.2em;
+  color: #333;
 }
 
 .Home__playlists {
   margin-top: 20px;
 }
 
-.playlist-grid {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(150px, 1fr)
-  ); /* Layout dạng lưới cho playlist */
+.playlist-grid, .video-grid, .section-grid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+}
+
+.playlist, .video-item, .section-grid-item {
+  width: 150px; /* Adjust the width as needed */
+  cursor: pointer;
+  text-align: center;
+}
+
+.playlist img, .video-item img, .section-grid-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.playlist img:hover, .video-item img:hover, .section-grid-item img:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
 .playlist {
@@ -140,6 +155,18 @@
 .notification-popup p:hover {
   background-color: #444;
 }
+
+.video-item img {
+  width: 120px; /* Reduced width for video thumbnails */
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.video-item img:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
 @media (max-width: 768px) {
   .playlist-grid {
     grid-template-columns: repeat(

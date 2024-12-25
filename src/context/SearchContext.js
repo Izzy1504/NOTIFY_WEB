@@ -6,35 +6,16 @@ export const SearchProvider = ({ children }) => {
   const [searchResults, setSearchResults] = useState([]);
 
   const fetchAccessToken = async () => {
-    const clientId = 'd0a4d0901ef24d31b048d5f2ce9e9fee';
-    const clientSecret = 'c5ee7fd1352b424b912e66292e334273';
-    const authString = `${clientId}:${clientSecret}`;
-    const encodedAuthString = btoa(authString);
-
-    try {
-      const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${encodedAuthString}`,
-        },
-        body: 'grant_type=client_credentials',
-      });
-      const data = await response.json();
-      return data.access_token;
-    } catch (error) {
-      console.error('Error fetching access token:', error);
-    }
+    const apiKey = 'AIzaSyCHM1nFjoDZgJACpSr9oxbqGtk40wumu6Y';
+    return apiKey;
   };
 
-  const searchSpotify = async (query) => {
-    const accessToken = await fetchAccessToken();
-    if (!accessToken) return;
+  const searchYouTube = async (query) => {
+    const apiKey = await fetchAccessToken();
+    if (!apiKey) return;
 
     try {
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=album,artist,track`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${query}&key=${apiKey}`);
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {
@@ -43,7 +24,7 @@ export const SearchProvider = ({ children }) => {
   };
 
   return (
-    <SearchContext.Provider value={{ searchResults, searchSpotify }}>
+    <SearchContext.Provider value={{ searchResults, searchYouTube }}>
       {children}
     </SearchContext.Provider>
   );

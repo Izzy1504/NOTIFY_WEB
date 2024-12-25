@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -10,38 +10,40 @@ import {
   faRepeat,
   faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaBell, FaUserCircle,FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import "../Musicplayer/Musicplayer.css";
 import { useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const MusicPlayer = () => {
   const { albumId } = useParams();
-  const [album, setAlbum] = useState(null); // Thông tin album
-  const [isPlaying, setIsPlaying] = useState(false); // Trạng thái phát nhạc
-  const [currentTrack, setCurrentTrack] = useState(null); // Bài hát hiện tại
-  const [currentTime, setCurrentTime] = useState(0); // Thời gian hiện tại của bài hát
-  const [duration, setDuration] = useState(0); // Tổng thời gian của bài hát
-  const [volume, setVolume] = useState(50); // Volume
+  const { state } = useLocation();
+  console.log("Received albumId:", albumId);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(50);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  const [player, setPlayer] = useState(null); // Spotify Player instance
-  const [deviceId, setDeviceId] = useState(null); // Device ID cho Spotify Player
-  const [isRepeat, setIsRepeat] = useState(true); // làm cho repeat
-  const [isBold, setIsBold] = useState(false); //
+  const [isRepeat, setIsRepeat] = useState(true);
+  const [isBold, setIsBold] = useState(false);
   const navigate = useNavigate();
-  const [selectedTrack, setSelectedTrack] = useState(null); // State để lưu track được chọn
+  const [selectedTrack, setSelectedTrack] = useState(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [albums, setAlbums] = useState([]);
-  //pop up menu
+  const [videoId, setVideoId] = useState(null);
+  const audioRef = useRef(null);
+  const [tracks, setTracks] = useState([]);
+  const apiKey = 'AIzaSyCHM1nFjoDZgJACpSr9oxbqGtk40wumu6Y'; // Replace with your API key
+
   const toggleUserMenu = () => {
     setShowUserMenu(!showUserMenu);
     setShowNotifications(false);
   };
 
   const handdleuser = () => {
-    navigate('/userin');
+    navigate("/userin");
   };
 
   const toggleNotifications = () => {
@@ -50,16 +52,18 @@ const MusicPlayer = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
-    navigate('/login');
+    localStorage.removeItem("userToken");
+    navigate("/login");
   };
 
-
   const togglePlayPause = () => {
-    if (player) {
-      player.togglePlay().then(() => {
-        setIsPlaying(!isPlaying);
-      });
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
     }
   };
 
@@ -70,8 +74,8 @@ const MusicPlayer = () => {
   const handleVolumeChange = (event) => {
     const newVolume = event.target.value;
     setVolume(newVolume);
-    if (player) {
-      player.setVolume(newVolume / 100); // Chỉnh âm lượng
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
     }
   };
 
@@ -79,264 +83,434 @@ const MusicPlayer = () => {
     setIsRepeat(!isRepeat);
   };
 
-  // Fetch Spotify access token
-  const fetchAccessToken = async () => {
-    const clientId = 'd0a4d0901ef24d31b048d5f2ce9e9fee';
-    const clientSecret = 'c5ee7fd1352b424b912e66292e334273';
-    const authString = `${clientId}:${clientSecret}`;
-    const encodedAuthString = btoa(authString);
-
-    try {
-      const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${encodedAuthString}`,
-        },
-        body: 'grant_type=client_credentials',
-      });
-      const data = await response.json();
-      return data.access_token;
-    } catch (error) {
-      console.error('Error fetching access token:', error);
-    }
-  };
-
-  // Khởi tạo Spotify Web Playback SDK và kết nối
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      window.onSpotifyWebPlaybackSDKReady = async () => {
-        const token = await fetchAccessToken();
-
-        const playerInstance = new window.Spotify.Player({
-          name: 'Spotify Web Playback SDK',
-          getOAuthToken: cb => { cb(token); },
-          volume: 0.5
-        });
-
-        // Đăng ký sự kiện của player
-        playerInstance.addListener('ready', ({ device_id }) => {
-          console.log('Ready with Device ID', device_id);
-          setDeviceId(device_id);
-        });
-
-        playerInstance.addListener('not_ready', ({ device_id }) => {
-          console.log('Device ID has gone offline', device_id);
-        });
-
-        playerInstance.addListener('player_state_changed', (state) => {
-          if (!state) return;
-          setCurrentTrack(state.track_window.current_track);
-          setIsPlaying(!state.paused);
-          setDuration(state.duration);
-          setCurrentTime(state.position);
-        });
-
-        // Kết nối với player
-        playerInstance.connect();
-        setPlayer(playerInstance);
-      };
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const toggleBold = () => {
-    const trackElement = document.querySelector('.track-list-item.active');
-    if (trackElement) {
-      trackElement.classList.toggle('bold');
-    }
-  };
-
-  // Fetch album data from Spotify API
-  useEffect(() => {
-    const fetchAlbumData = async () => {
+    const fetchVideoDetails = async () => {
       try {
-        const accessToken = await fetchAccessToken();
-        if (!accessToken) return;
-
-        const albumResponse = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        const albumData = await albumResponse.json();
-        setAlbum(albumData);
+        let videoData;
+        if (state && state.video) {
+          console.log("Loading video from search:", state.video);
+          videoData = {
+            id: state.video.id.videoId,
+            snippet: state.video.snippet,
+          };
+        } else if (albumId) {
+           console.log("Loading video from albumId:", albumId);
+          const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${albumId}&key=${apiKey}`
+          );
+           const data = await response.json();
+            if (data.items && data.items.length > 0) {
+              videoData = {
+              id: albumId,
+              snippet: data.items[0].snippet
+              };
+            }
+        }
+          
+         if(videoData) {
+          setSelectedTrack(videoData);
+          setVideoId(videoData.id);
+         
+        const relatedResponse = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=${videoData.id}&type=video&key=${apiKey}&maxResults=10`
+        );
+           const relatedData = await relatedResponse.json();
+        if (relatedData.items) {
+          setTracks([videoData, ...relatedData.items]);
+            }
+             await selectTrack(videoData);
+        setIsPlaying(false);
+          }
       } catch (error) {
-        console.error('Error fetching album data:', error);
+        console.error("Error fetching video details:", error);
       }
     };
+    fetchVideoDetails();
+  }, [albumId, state, apiKey]);
 
-    if (albumId) {
-      fetchAlbumData();
-    }
-  }, [albumId]);
 
-  // Chọn bài hát để phát
-  const selectTrack = (track) => {
-    setCurrentTrack(track);
-    setIsPlaying(true);
-    if (player) {
-      player._options.getOAuthToken(async (token) => {
-        await fetch(
-          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          {
-            method: 'PUT',
-            body: JSON.stringify({
-              uris: [track.uri], // Phát bài hát đã chọn
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      });
+  const toggleBold = () => {
+    const trackElement = document.querySelector(".track-list-item.active");
+    if (trackElement) {
+      trackElement.classList.toggle("bold");
     }
-    setSelectedTrack(track);
   };
 
-  // Xử lý khi thanh seek bar thay đổi
+  const selectTrack = async (track) => {
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    const tryLoadAudio = async () => {
+        try {
+            const videoData = {
+                id: track.id.videoId || track.id,
+                snippet: track.snippet
+            };
+
+            setSelectedTrack(videoData);
+            setVideoId(videoData.id);
+
+            if (audioRef.current) {
+              //  const audioUrl = `http://localhost:5000/stream/${videoData.id}?format=audio`; // để đó
+                 const audioUrl = `http://localhost:5000/youtube-audio?videoId=${videoData.id}`; // sửa lại tí 
+
+                console.log('Setting audio source:', audioUrl);
+
+                audioRef.current.pause();
+                audioRef.current.src = audioUrl;
+                audioRef.current.crossOrigin = "anonymous";
+
+                await new Promise((resolve, reject) => {
+                    const timeoutId = setTimeout(() => {
+                        reject(new Error('Audio load timeout'));
+                    }, 10000);
+
+                    audioRef.current.oncanplay = () => {
+                        clearTimeout(timeoutId);
+                        resolve();
+                    };
+
+                    audioRef.current.onerror = (e) => {
+                        clearTimeout(timeoutId);
+                        console.error('Audio error from promise:', e.target.error);
+                        reject(new Error(`Audio load failed: ${e.target.error?.message || 'Unknown error'}`));
+                    };
+
+                    audioRef.current.onloadedmetadata = () => {
+                        console.log('metadata loaded')
+                    }
+                });
+
+                console.log('Audio loaded successfully');
+                setIsPlaying(true);
+                audioRef.current.play();
+            }
+        } catch (error) {
+            console.error(`Audio load attempt ${retryCount + 1} failed:`, error);
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`Retrying... Attempt ${retryCount} of ${maxRetries}`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return tryLoadAudio();
+            }
+            throw error;
+        }
+    };
+
+    try {
+        await tryLoadAudio();
+    } catch (error) {
+        console.error('Final error selecting track:', error);
+        alert('Unable to load this track. Please try another one or check your connection.');
+    }
+};
+    const handleNext = () => {
+       if (tracks.length === 0) {
+         return;
+       }
+       const currentIndex = tracks.findIndex(track => track.id === (selectedTrack.id.videoId || selectedTrack.id));
+      
+       const nextIndex = (currentIndex + 1) % tracks.length;
+        console.log('next track', nextIndex, tracks)
+       selectTrack(tracks[nextIndex]);
+    };
+
+    const handlePrevious = () => {
+      if (tracks.length === 0) {
+        return;
+      }
+      const currentIndex = tracks.findIndex(track => track.id === (selectedTrack.id.videoId || selectedTrack.id));
+      const previousIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+      selectTrack(tracks[previousIndex]);
+    };
+
+    const handleShuffle = () => {
+      const shuffledTracks = [...tracks];
+       for (let i = shuffledTracks.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledTracks[i], shuffledTracks[j]] = [shuffledTracks[j], shuffledTracks[i]];
+        }
+        setTracks(shuffledTracks);
+        setIsBold(!isBold);
+    };
+
+  useEffect(() => {
+    const location = window.location;
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get("query");
+    if (query) {
+      fetchYouTubeResults(query);
+    }
+  }, [apiKey]);
+
+  const fetchYouTubeResults = async (query) => {
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=${apiKey}&maxResults=10`
+      );
+      const data = await response.json();
+        setTracks(data.items.map(item => ({
+        ...item,
+        id: item.id.videoId
+      })));
+    } catch (error) {
+      console.error("Error fetching YouTube results:", error);
+    }
+  };
+
+   useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.addEventListener('timeupdate', () => {
+          setCurrentTime(audioRef.current.currentTime);
+        });
+        
+        audioRef.current.addEventListener('loadedmetadata', () => {
+          setDuration(audioRef.current.duration);
+           console.log('Audio metadata loaded successfully');
+        });
+        
+        audioRef.current.addEventListener('ended', () => {
+          setIsPlaying(false);
+        });
+         audioRef.current.addEventListener('canplay', () => {
+         console.log('Audio can play event')
+          });
+          audioRef.current.addEventListener('error', (e) => {
+            console.error('audio tag error from event:', e.target.error);
+         });
+      }
+     }, []);
+
   const handleSeekChange = (event) => {
     const seekTime = event.target.value;
     setCurrentTime(seekTime);
-    if (player) {
-      player.seek(seekTime * 1000); // Chuyển thời gian phát nhạc
+    if (audioRef.current) {
+      audioRef.current.currentTime = seekTime;
+    }
+  };
+
+  const menuItems = [
+    { id: 1, text: "Tài khoản", onClick: handdleuser },
+    { id: 2, text: "Hồ sơ" },
+    { id: 3, text: "Chế độ nghe riêng tư" },
+    { id: 4, text: "Cài đặt" },
+    { id: 5, text: "Đăng xuất", onClick: handleLogout, isLogout: true },
+  ];
+
+  const notifications = [
+    { id: 1, text: "Bạn có 1 tin nhắn mới" },
+    { id: 2, text: "Thông báo về bài hát mới" },
+    { id: 3, text: "Cập nhật tính năng mới" },
+  ];
+
+    const controlButtons = [
+    { id: 1, name: 'shuffle', onClick: handleShuffle, className: isBold ? "bold-icon" : "" },
+    { id: 2, name: 'backward', onClick: handlePrevious },
+    { id: 3, name: 'playpause', onClick: togglePlayPause },
+    { id: 4, name: 'forward', onClick: handleNext},
+    { id: 5, name: 'repeat', onClick: toggleRotate }
+    ];
+
+  const getControlIcon = (button) => {
+    switch (button.name) {
+       case 'shuffle': return <FontAwesomeIcon icon={faShuffle} className={button.className} />;
+      case "backward":
+        return <FontAwesomeIcon icon={faBackward} />;
+      case "playpause":
+        return <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />;
+      case "forward":
+        return <FontAwesomeIcon icon={faForward} />;
+         case 'repeat': return <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"} />;
+      default:
+        return null;
     }
   };
 
   return (
     <div className="Music">
       <div className="Home__header">
-        <h2>Now Playing: {album ? album.name : "Loading..."}</h2>
+        <div className="header-content">
+          <h2>
+            {selectedTrack
+              ? `Now Playing: ${selectedTrack.snippet.title}`
+              : "Select a track"}
+          </h2>
+          <h3>{selectedTrack ? `Artist: ${selectedTrack.snippet.channelTitle}` : ""}</h3>
+        </div>
+
         <div className="header-right">
           <div className="notification-icon" onClick={toggleNotifications}>
             <FaBell size={25} />
             {showNotifications && (
               <div className="notification-popup">
                 <h4>Thông báo</h4>
-                <p>Bạn có 1 tin nhắn mới</p>
-                <p>Thông báo về bài hát mới</p>
-                <p>Cập nhật tính năng mới</p>
+                <div className="notifications-list">
+                  {notifications.map((notification) => (
+                    <div key={notification.id} className="notification-item">
+                      {notification.text}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
+
           <div className="user-circle" onClick={toggleUserMenu}>
             <FaUserCircle size={30} />
             {showUserMenu && (
               <div className="user-menu">
-                <div className="user-menu-item" onClick={handdleuser}>
-                  <span>Tài khoản</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Hồ sơ</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Chế độ nghe riêng tư</span>
-                </div>
-                <div className="user-menu-item">
-                  <span>Cài đặt</span>
-                </div>
-                <div className="user-menu-item" onClick={handleLogout}>
-                  <FaSignOutAlt /> Đăng xuất
-                </div>
+                {menuItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`user-menu-item ${
+                      item.isLogout ? "logout-item" : ""
+                    }`}
+                    onClick={item.onClick}
+                  >
+                    {item.isLogout && <FaSignOutAlt />}
+                    <span>{item.text}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-         
         </div>
       </div>
 
-      {album ? (
-        <div className="album-info">
-          <img
-            className="album-art"
-            src={album.images[0].url}
-            alt={album.name}
-          />
-          <div className="album-details">
-            <h1>{album.name}</h1>
-            <p>{album.artists[0].name} • {album.release_date} • {album.total_tracks} songs</p>
-          </div>
+      <div className="player-content">
+        {selectedTrack ? (
+          <div className="song-info">
+            <div className="song-art-container">
+              <img
+                className="song-art"
+                src={selectedTrack.snippet.thumbnails.high.url}
+                alt={selectedTrack.snippet.title}
+                onError={(e) => {
+                  e.target.src = "path/to/fallback/image.jpg";
+                }}
+              />
+            </div>
 
-          {/* Hiển thị danh sách bài hát */}
-          <div className="track-list">
-            {album.tracks.items.map((track, index) => (
-              <div key={index} className="track-item" onClick={() => selectTrack(track)}>
-                <span>{track.track_number}. {track.name}</span>
+            <div className="track-list">
+              <h3>Playlist</h3>
+              <div className="tracks-container">
+                {tracks.map((track) => (
+                  <div
+                    key={track.id}
+                    className={`track-item ${
+                      selectedTrack.id === (track.id.videoId || track.id) ? "active" : ""
+                    }`}
+                    onClick={() => selectTrack(track)}
+                  >
+                    <img
+                      src={track.snippet.thumbnails.default.url}
+                      alt={track.snippet.title}
+                      className="track-thumbnail"
+                    />
+                    <div className="track-info">
+                      <span className="track-title">{track.snippet.title}</span>
+                      <span className="track-artist">
+                        {track.snippet.channelTitle}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      ) : (
-        <p>Loading album data...</p>
-      )}
-
-{album && (
-  <div className="bottom-bar">
-    <div className="bottom-bar-left">
-      <img
-        className="bottom-album-art"
-        src={album.images[0].url}
-        alt={album.name}
-      />
-      <div className="bottom-song-info">
-        <h4>Now Playing: {selectedTrack ? selectedTrack.name : "Loading..."}</h4>
-        <p>{album.artists[0].name}</p>
-      </div>
-    </div>
-    <div className="bottom-controls">
-      <button className="control-button" onClick={toggleBold}>
-        <FontAwesomeIcon icon={faShuffle} className={isBold ? "bold-icon" : ""} />
-      </button>
-      <button className="control-button">
-        <FontAwesomeIcon icon={faBackward} />
-      </button>
-      <button className="control-button" onClick={togglePlayPause}>
-        <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
-      </button>
-      <button className="control-button">
-        <FontAwesomeIcon icon={faForward} />
-      </button>
-      <button className="control-button" onClick={toggleRotate}>
-        <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"}></i>
-      </button>
-    </div>
-    {currentTrack && (
-      <div className="seek-bar-container">
-        <div className="time-info">
-          <FontAwesomeIcon icon={faVolumeUp} className="volume-icon" />
-          <span>{Math.floor(currentTime / 60)}:{("0" + Math.floor(currentTime % 60)).slice(-2)}</span>
-          <input
-            type="range"
-            min="0"
-            max={duration / 1000} // Chuyển từ ms sang giây
-            value={currentTime}
-            onChange={handleSeekChange}
-            className="seek-bar"
-          />
-          <span>{Math.floor(duration / 60000)}:{("0" + Math.floor((duration % 60000) / 1000)).slice(-2)}</span>
-        </div>
-        {showVolumeSlider && (
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="volume-slider"
-          />
+        ) : (
+          <div className="loading-state">
+            <p>Loading music player...</p>
+          </div>
         )}
       </div>
-    )}
-  </div>
-)}
+
+        {selectedTrack && (
+        <div className="bottom-bar">
+          <div className="bottom-bar-content">
+            <div className="now-playing">
+              <img
+                src={selectedTrack.snippet.thumbnails.default.url}
+                alt={selectedTrack.snippet.title}
+                className="mini-thumbnail"
+              />
+              <div className="track-info">
+                <span className="track-title">{selectedTrack.snippet.title}</span>
+                <span className="track-artist">{selectedTrack.snippet.channelTitle}</span>
+              </div>
+            </div>
+
+            <div className="player-controls">
+                {controlButtons.map(button => (
+                <button
+                  key={button.id}
+                  className={`control-button ${button.name}`}
+                  onClick={button.onClick}
+                  disabled={!audioRef.current}
+                >
+                  {getControlIcon(button)}
+                </button>
+              ))}
+            </div>
+
+            <div className="volume-controls">
+              <FontAwesomeIcon
+                icon={faVolumeUp}
+                onClick={toggleVolumeSlider}
+                className="volume-icon"
+              />
+              {showVolumeSlider && (
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="volume-slider"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <audio
+        ref={audioRef}
+         onError={(e) => {
+          const error = e.target.error;
+          console.error('Audio error:', {
+            code: error?.code,
+            message: error?.message,
+            networkState: e.target.networkState,
+            readyState: e.target.readyState
+          });
+          
+           if (error) {
+            switch (error.code) {
+              case 1:
+                console.log('MEDIA_ERR_ABORTED');
+                break;
+              case 2:
+                console.log('MEDIA_ERR_NETWORK');
+                break;
+              case 3:
+                console.log('MEDIA_ERR_DECODE');
+                break;
+              case 4:
+                console.log('MEDIA_ERR_SRC_NOT_SUPPORTED');
+                break;
+              default:
+                console.log('UNKNOWN_ERROR');
+            }
+          }
+          
+          setIsPlaying(false);
+        }}
+        onLoadedData={() => console.log('Audio data loaded')}
+        onCanPlay={() => console.log('Audio can play')}
+        preload="auto"
+        type="audio/mpeg"
+      />
     </div>
   );
 };

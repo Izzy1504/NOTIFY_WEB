@@ -463,3 +463,85 @@
     width: auto;
     font-size: 12px;
 }
+
+/* Add styles for the YouTube player container */
+.youtube-player {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.player-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.track-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.track-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.track-thumbnail {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.track-artist {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 20px;
+}
+
+.bottom-bar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.player-controls {
+  display: flex;
+  gap: 20px;
+}
+
+.control-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2em;
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

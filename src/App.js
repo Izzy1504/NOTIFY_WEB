@@ -13,44 +13,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 
 function App() {
   const location = useLocation();
-  const [player, setPlayer] = useState(null); // Để lưu trữ đối tượng Spotify Player
-
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      // Thay thế 'YOUR_OAUTH_TOKEN' bằng token bạn lấy từ quá trình OAuth
-      const token = 'YOUR_OAUTH_TOKEN'; 
-
-      const playerInstance = new window.Spotify.Player({
-        name: 'React Spotify Player',
-        getOAuthToken: cb => { cb(token); }, // Cung cấp token khi player cần
-        volume: 0.5
-      });
-
-      // Đăng ký sự kiện của player
-      playerInstance.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-      });
-
-      playerInstance.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-      });
-
-      // Kết nối player
-      playerInstance.connect();
-
-      // Lưu trữ player vào state
-      setPlayer(playerInstance);
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   return (
     <div className="app">
@@ -60,7 +22,7 @@ function App() {
         <Route path="/" element={<MainContent />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/musicplayer/:albumId" element={<Musicplayer player={player} />} />
+        <Route path="/musicplayer/:albumId" element={<Musicplayer />} />
         <Route path="/userin" element={<Userin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/search" element={<Search />} />

@@ -3,6 +3,7 @@ import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import '../Home/Home.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { SearchContext } from '../../context/SearchContext';
+import axios from 'axios'; // Added for YouTube API requests
 
 const Search = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -10,7 +11,8 @@ const Search = () => {
   const [albums, setAlbums] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [jumpBackIn, setJumpBackIn] = useState([]);
-  const { searchResults, searchSpotify } = useContext(SearchContext);
+  const { searchResults } = useContext(SearchContext); // Removed searchSpotify
+  const [youtubeResults, setYoutubeResults] = useState([]); // Added YouTube results state
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,18 +39,36 @@ const Search = () => {
     navigate(`/musicplayer/${album.id}`, { state: { album } });
   };
 
+  const searchYouTube = async (query) => { // Added YouTube search function
+    try {
+      const response = await axios.get(`https://www.googleapis.com/youtube/v3/search`, {
+        params: {
+          part: 'snippet',
+          q: query,
+          key: 'AIzaSyCHM1nFjoDZgJACpSr9oxbqGtk40wumu6Y',
+          type: 'video',
+        },
+      });
+      setYoutubeResults(response.data.items);
+    } catch (error) {
+      console.error('YouTube search error:', error);
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     const query = new URLSearchParams(location.search).get('query');
     if (query) {
-      searchSpotify(query);
+      // searchSpotify(query); // Removed
+      searchYouTube(query); // Trigger YouTube search
     }
   };
 
   useEffect(() => {
     const query = new URLSearchParams(location.search).get('query');
     if (query) {
-      searchSpotify(query);
+      // searchSpotify(query); // Removed
+      searchYouTube(query); // Trigger YouTube search on location change
     }
   }, [location.search]);
 
@@ -58,6 +78,24 @@ const Search = () => {
     url.searchParams.delete('query');
     window.history.replaceState({}, '', url);
   }, []);
+
+  const handleYouTubeClick = (video) => {
+    console.log("Clicked video:", video);
+    // Đảm bảo video có đủ thông tin cần thiết
+    const videoData = {
+      id: {
+        videoId: video.id.videoId
+      },
+      snippet: video.snippet
+    };
+    
+    // Chuyển hướng với đầy đủ thông tin video
+    navigate(`/musicplayer/${video.id.videoId}`, {
+      state: {
+        video: videoData
+      }
+    });
+  };
 
   return (
     <div className="Home">
@@ -125,7 +163,21 @@ const Search = () => {
         </div>
       )}
 
-      {/* <div className="Home__playlists">
+      {youtubeResults.length > 0 && ( // Adjusted YouTube search results section
+        <div className="Home__youtube-results">
+          <h3 className="Home__section-title">YouTube Results</h3>
+          <div className="playlist-grid">
+            {youtubeResults.map((video) => (
+              <div className="playlist" key={video.id.videoId} onClick={() => handleYouTubeClick(video)}>
+                <img src={video.snippet.thumbnails.default.url} alt={video.snippet.title} />
+                <h4>{video.snippet.title}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="Home__playlists">
         <h3 className="Home__section-title">Albums mới phát hành</h3>
         <div className="playlist-grid">
           {albums.length > 0 ? (
@@ -139,10 +191,10 @@ const Search = () => {
             <p>Không có album nào để hiển thị</p>
           )}
         </div>
-      </div> */}
+      </div>
 
       {/* Recently Played Section */}
-      {/* <h3 className="Home__section-title">Recently Played</h3>
+      <h3 className="Home__section-title">Recently Played</h3>
       <div className="section-grid">
         {recentlyPlayed.length > 0 ? (
           recentlyPlayed.map((item) => (
@@ -154,10 +206,10 @@ const Search = () => {
         ) : (
           <p>Không có dữ liệu Recently Played để hiển thị</p>
         )}
-      </div> */}
+      </div>
 
       {/* Jump Back In Section */}
-      {/* <h3 className="Home__section-title">Jump back in</h3>
+      <h3 className="Home__section-title">Jump back in</h3>
       <div className="section-grid">
         {jumpBackIn.length > 0 ? (
           jumpBackIn.map((item) => (
@@ -169,7 +221,7 @@ const Search = () => {
         ) : (
           <p>Không có dữ liệu Jump Back In để hiển thị</p>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
