@@ -19,7 +19,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 const MusicPlayer = () => {
   const { albumId } = useParams();
   const { state } = useLocation();
-  console.log("Received albumId:", albumId);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -87,6 +86,8 @@ const MusicPlayer = () => {
     const fetchVideoDetails = async () => {
       try {
         let videoData;
+        console.log("Fetching video details for albumId:", albumId); 
+        
         if (state && state.video) {
           console.log("Loading video from search:", state.video);
           videoData = {
@@ -125,9 +126,11 @@ const MusicPlayer = () => {
         console.error("Error fetching video details:", error);
       }
     };
-    fetchVideoDetails();
-  }, [albumId, state, apiKey]);
 
+    if (albumId || (state && state.video)) {
+      fetchVideoDetails();
+    }
+  }, [albumId, state, apiKey]);
 
   const toggleBold = () => {
     const trackElement = document.querySelector(".track-list-item.active");
@@ -151,46 +154,60 @@ const MusicPlayer = () => {
             setVideoId(videoData.id);
 
             if (audioRef.current) {
-              //  const audioUrl = `http://localhost:5000/stream/${videoData.id}?format=audio`; // để đó
-                 const audioUrl = `http://localhost:5000/youtube-audio?videoId=${videoData.id}`; // sửa lại tí 
-
-                console.log('Setting audio source:', audioUrl);
-
+                // Ensure the audio is stopped before changing source
                 audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+
+                // Use more specific audio format and add timestamp to prevent caching
+                const timestamp = new Date().getTime();
+                const audioUrl = `http://localhost:5000/youtube-audio?videoId=${videoData.id}&t=${timestamp}`;
+
+                console.log('Loading audio from:', audioUrl);
+
                 audioRef.current.src = audioUrl;
                 audioRef.current.crossOrigin = "anonymous";
 
-                await new Promise((resolve, reject) => {
+                // Set audio type explicitly
+                audioRef.current.type = 'audio/mpeg';
+
+                // Create a timeout promise
+                const loadPromise = new Promise((resolve, reject) => {
                     const timeoutId = setTimeout(() => {
                         reject(new Error('Audio load timeout'));
-                    }, 10000);
+                    }, 15000); // 15 seconds timeout
 
-                    audioRef.current.oncanplay = () => {
+                    audioRef.current.oncanplaythrough = () => {
                         clearTimeout(timeoutId);
                         resolve();
                     };
 
                     audioRef.current.onerror = (e) => {
                         clearTimeout(timeoutId);
-                        console.error('Audio error from promise:', e.target.error);
-                        reject(new Error(`Audio load failed: ${e.target.error?.message || 'Unknown error'}`));
+                        const error = e.target.error;
+                        console.error('Audio loading error:', {
+                            code: error?.code,
+                            message: error?.message,
+                            details: error
+                        });
+                        reject(new Error(`Audio load failed: ${error?.message || 'Unknown error'}`));
                     };
-
-                    audioRef.current.onloadedmetadata = () => {
-                        console.log('metadata loaded')
-                    }
                 });
 
-                console.log('Audio loaded successfully');
+                await loadPromise;
+
+                // If we get here, audio loaded successfully
                 setIsPlaying(true);
-                audioRef.current.play();
+                await audioRef.current.play().catch(error => {
+                    console.error('Play failed:', error);
+                    throw error;
+                });
             }
         } catch (error) {
             console.error(`Audio load attempt ${retryCount + 1} failed:`, error);
             if (retryCount < maxRetries) {
                 retryCount++;
                 console.log(`Retrying... Attempt ${retryCount} of ${maxRetries}`);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
                 return tryLoadAudio();
             }
             throw error;
@@ -201,9 +218,12 @@ const MusicPlayer = () => {
         await tryLoadAudio();
     } catch (error) {
         console.error('Final error selecting track:', error);
+        // Show user-friendly error message
         alert('Unable to load this track. Please try another one or check your connection.');
+        setIsPlaying(false);
     }
 };
+
     const handleNext = () => {
        if (tracks.length === 0) {
          return;
@@ -259,26 +279,33 @@ const MusicPlayer = () => {
   };
 
    useEffect(() => {
-      if (audioRef.current) {
-        audioRef.current.addEventListener('timeupdate', () => {
-          setCurrentTime(audioRef.current.currentTime);
-        });
-        
-        audioRef.current.addEventListener('loadedmetadata', () => {
-          setDuration(audioRef.current.duration);
-           console.log('Audio metadata loaded successfully');
-        });
-        
-        audioRef.current.addEventListener('ended', () => {
-          setIsPlaying(false);
-        });
-         audioRef.current.addEventListener('canplay', () => {
-         console.log('Audio can play event')
-          });
-          audioRef.current.addEventListener('error', (e) => {
-            console.error('audio tag error from event:', e.target.error);
-         });
-      }
+      const audio = audioRef.current;
+    
+    if (audio) {
+      const timeUpdateHandler = () => setCurrentTime(audio.currentTime);
+      const metadataHandler = () => {
+        setDuration(audio.duration);
+        console.log('Audio metadata loaded successfully');
+      };
+      const endedHandler = () => setIsPlaying(false);
+      const canPlayHandler = () => console.log('Audio can play event');
+      const errorHandler = (e) => console.error('audio tag error from event:', e.target.error);
+
+      audio.addEventListener('timeupdate', timeUpdateHandler);
+      audio.addEventListener('loadedmetadata', metadataHandler);
+      audio.addEventListener('ended', endedHandler);
+      audio.addEventListener('canplay', canPlayHandler);
+      audio.addEventListener('error', errorHandler);
+
+      // Cleanup function
+      return () => {
+        audio.removeEventListener('timeupdate', timeUpdateHandler);
+        audio.removeEventListener('loadedmetadata', metadataHandler);
+        audio.removeEventListener('ended', endedHandler);
+        audio.removeEventListener('canplay', canPlayHandler);
+        audio.removeEventListener('error', errorHandler);
+      };
+    }
      }, []);
 
   const handleSeekChange = (event) => {
@@ -482,7 +509,8 @@ const MusicPlayer = () => {
             code: error?.code,
             message: error?.message,
             networkState: e.target.networkState,
-            readyState: e.target.readyState
+            readyState: e.target.readyState,
+            currentSrc: e.target.currentSrc
           });
           
            if (error) {
@@ -506,9 +534,9 @@ const MusicPlayer = () => {
           
           setIsPlaying(false);
         }}
-        onLoadedData={() => console.log('Audio data loaded')}
-        onCanPlay={() => console.log('Audio can play')}
-        preload="auto"
+        onLoadedData={() => console.log('Audio data loaded successfully')}
+        onCanPlay={() => console.log('Audio is ready to play')}
+        preload="metadata"
         type="audio/mpeg"
       />
     </div>
