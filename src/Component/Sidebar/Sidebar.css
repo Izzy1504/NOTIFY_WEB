@@ -1,11 +1,16 @@
 .sidebar-container {
   display: flex;
   align-items: flex-start;
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0;
+  height: 100vh; /* Full height */
+  overflow: hidden; /* Prevent the sidebar container from scrolling */
 }
 
 .sidebar {
   /* width: 200px; */
-  height: calc(100vh - 20px); /* Chiều cao vừa với body, trừ đi padding */
+  height: 100%; /* Full height */
   background-color: #181818;
   color: #fff;
   padding: 20px;
@@ -34,6 +39,7 @@
 .sidebar__header {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center the content horizontally */
   gap: 10px;
 }
 
@@ -144,4 +150,13 @@ body {
 }
 .dropdown-toggle:hover {
   background-color: #525050;
+}
+
+.logo {
+  width: 50px;
+  height: auto;
+  background-color: transparent;
+  margin-bottom: 5px;
+  margin-left: 30px;
+  filter: grayscale(1) invert(1); /* Biến ảnh thành trắng đen và đảo màu */
 }

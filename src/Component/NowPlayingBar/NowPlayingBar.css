@@ -1,0 +1,79 @@
+.now-playing-bar {
+  position: fixed;
+  bottom: 1px;
+  left: 3%;
+  transform: translateX(-2%);
+  background-color: #282828;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-self: space-evenly;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 97.8%;
+}
+
+.track-info {
+  display: flex;
+  align-items: center;
+  margin-right: 50px;
+}
+
+.track-info img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+
+.track-title {
+  font-weight: bold;
+}
+
+.track-artist {
+  font-size: 0.9em;
+  color: #b3b3b3;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  margin: 0 5px;
+  cursor: pointer;
+
+}
+
+.controls button:focus {
+  outline: none;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.volume-control input[type="range"] {
+  margin-left: 10px;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  margin: 0 20px;
+}
+
+.progress-bar input[type="range"] {
+  width: 100%;
+}
+
+.time-display {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  color: #b3b3b3;
+}

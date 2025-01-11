@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Sidebar/Sidebar.css';
 import { SearchContext } from '../../context/SearchContext';
+import logo from '../../assets/LOGO2.png'; // Update the logo image path
 
 const Sidebar = () => {
   const [isLikedSongsOpen, setIsLikedSongsOpen] = useState(false);
@@ -72,7 +73,8 @@ const Sidebar = () => {
     <div className="sidebar-container">
       <div className={`sidebar ${isSidebarOpen ? '' : 'closed'}`}>
         <div className="sidebar__header">
-        <div onClick={handleHomeClick} className="home-button">
+          <div onClick={handleHomeClick} className="home-button">
+            <img src={logo} alt="Logo" className="logo" /> {/* Add the logo image */}
             <h2 className="home-title">Trang chủ</h2>
           </div>
           

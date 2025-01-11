@@ -132,6 +132,16 @@ const MusicPlayer = () => {
     }
   }, [albumId, state, apiKey]);
 
+  useEffect(() => {
+    const savedTrack = localStorage.getItem("currentTrack");
+    if (savedTrack) {
+      const track = JSON.parse(savedTrack);
+      setSelectedTrack(track);
+      setVideoId(track.id);
+      selectTrack(track);
+    }
+  }, []);
+
   const toggleBold = () => {
     const trackElement = document.querySelector(".track-list-item.active");
     if (trackElement) {
@@ -201,6 +211,9 @@ const MusicPlayer = () => {
                     console.error('Play failed:', error);
                     throw error;
                 });
+
+                // Save duration to localStorage
+                localStorage.setItem("trackDuration", audioRef.current.duration);
             }
         } catch (error) {
             console.error(`Audio load attempt ${retryCount + 1} failed:`, error);
@@ -216,6 +229,11 @@ const MusicPlayer = () => {
 
     try {
         await tryLoadAudio();
+        localStorage.setItem("currentTrack", JSON.stringify(track));
+        console.log('Track saved to localStorage:', track); // Log the saved track
+        // Notify NowPlayingBar about the selected track
+        const event = new CustomEvent('trackSelected', { detail: track });
+        window.dispatchEvent(event);
     } catch (error) {
         console.error('Final error selecting track:', error);
         // Show user-friendly error message
@@ -233,6 +251,7 @@ const MusicPlayer = () => {
        const nextIndex = (currentIndex + 1) % tracks.length;
         console.log('next track', nextIndex, tracks)
        selectTrack(tracks[nextIndex]);
+       localStorage.setItem("currentTrack", JSON.stringify(tracks[nextIndex]));
     };
 
     const handlePrevious = () => {
@@ -242,6 +261,7 @@ const MusicPlayer = () => {
       const currentIndex = tracks.findIndex(track => track.id === (selectedTrack.id.videoId || selectedTrack.id));
       const previousIndex = (currentIndex - 1 + tracks.length) % tracks.length;
       selectTrack(tracks[previousIndex]);
+      localStorage.setItem("currentTrack", JSON.stringify(tracks[previousIndex]));
     };
 
     const handleShuffle = () => {
@@ -329,29 +349,6 @@ const MusicPlayer = () => {
     { id: 2, text: "Thông báo về bài hát mới" },
     { id: 3, text: "Cập nhật tính năng mới" },
   ];
-
-    const controlButtons = [
-    { id: 1, name: 'shuffle', onClick: handleShuffle, className: isBold ? "bold-icon" : "" },
-    { id: 2, name: 'backward', onClick: handlePrevious },
-    { id: 3, name: 'playpause', onClick: togglePlayPause },
-    { id: 4, name: 'forward', onClick: handleNext},
-    { id: 5, name: 'repeat', onClick: toggleRotate }
-    ];
-
-  const getControlIcon = (button) => {
-    switch (button.name) {
-       case 'shuffle': return <FontAwesomeIcon icon={faShuffle} className={button.className} />;
-      case "backward":
-        return <FontAwesomeIcon icon={faBackward} />;
-      case "playpause":
-        return <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />;
-      case "forward":
-        return <FontAwesomeIcon icon={faForward} />;
-         case 'repeat': return <i className={isRepeat ? "bi bi-repeat-1" : "bi bi-repeat"} />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="Music">
@@ -451,94 +448,6 @@ const MusicPlayer = () => {
           </div>
         )}
       </div>
-
-        {selectedTrack && (
-        <div className="bottom-bar">
-          <div className="bottom-bar-content">
-            <div className="now-playing">
-              <img
-                src={selectedTrack.snippet.thumbnails.default.url}
-                alt={selectedTrack.snippet.title}
-                className="mini-thumbnail"
-              />
-              <div className="track-info">
-                <span className="track-title">{selectedTrack.snippet.title}</span>
-                <span className="track-artist">{selectedTrack.snippet.channelTitle}</span>
-              </div>
-            </div>
-
-            <div className="player-controls">
-                {controlButtons.map(button => (
-                <button
-                  key={button.id}
-                  className={`control-button ${button.name}`}
-                  onClick={button.onClick}
-                  disabled={!audioRef.current}
-                >
-                  {getControlIcon(button)}
-                </button>
-              ))}
-            </div>
-
-            <div className="volume-controls">
-              <FontAwesomeIcon
-                icon={faVolumeUp}
-                onClick={toggleVolumeSlider}
-                className="volume-icon"
-              />
-              {showVolumeSlider && (
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="volume-slider"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <audio
-        ref={audioRef}
-         onError={(e) => {
-          const error = e.target.error;
-          console.error('Audio error:', {
-            code: error?.code,
-            message: error?.message,
-            networkState: e.target.networkState,
-            readyState: e.target.readyState,
-            currentSrc: e.target.currentSrc
-          });
-          
-           if (error) {
-            switch (error.code) {
-              case 1:
-                console.log('MEDIA_ERR_ABORTED');
-                break;
-              case 2:
-                console.log('MEDIA_ERR_NETWORK');
-                break;
-              case 3:
-                console.log('MEDIA_ERR_DECODE');
-                break;
-              case 4:
-                console.log('MEDIA_ERR_SRC_NOT_SUPPORTED');
-                break;
-              default:
-                console.log('UNKNOWN_ERROR');
-            }
-          }
-          
-          setIsPlaying(false);
-        }}
-        onLoadedData={() => console.log('Audio data loaded successfully')}
-        onCanPlay={() => console.log('Audio is ready to play')}
-        preload="metadata"
-        type="audio/mpeg"
-      />
     </div>
   );
 };

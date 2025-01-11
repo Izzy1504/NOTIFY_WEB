@@ -81,6 +81,19 @@ app.get('/youtube-audio', async (req, res) => {
   }
 });
 
+app.get('/cached-tracks', (req, res) => {
+  fs.readdir(cacheDir, (err, files) => {
+    if (err) {
+      return res.status(500).send('Error reading cache directory');
+    }
+    const tracks = files.map(file => {
+      const [id] = file.split('.');
+      return { id, path: path.join(cacheDir, file) };
+    });
+    res.json(tracks);
+  });
+});
+
 // Add ffmpeg check function
 async function checkFfmpeg() {
   const ffmpegPath = path.join(__dirname, 'ffmpeg', 'ffmpeg.exe');

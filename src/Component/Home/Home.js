@@ -9,6 +9,7 @@ const Home = () => {
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [jumpBackIn, setJumpBackIn] = useState([]);
   const [trendingSongs, setTrendingSongs] = useState([]); // Manage trending songs
+  const [countryCode, setCountryCode] = useState('US'); // Manage country code
   
   const navigate = useNavigate();
 
@@ -33,25 +34,37 @@ const Home = () => {
 
   const handleSongClick = (song) => { // Handle song selection
     navigate(`/musicplayer/${song.id}`, { state: { song } });
+    // saveToRecentlyPlayed(song);
   };
   
-  // Remove Spotify access token fetching
-  // const fetchAccessToken = async () => {
-  //   // Spotify fetching logic...
-  // };
+  // const saveToRecentlyPlayed = (song) => {
+  //   setRecentlyPlayed((prev) => {
+  //       const songInfo = {
+  //         data: song.data,
+  //           id: song.id,
+  //           name: song.name, // Lấy tên bài hát
+  //           imageUrl: song.imageUrl, // Lấy URL ảnh
+        
+  //       };
 
-  // Remove fetchSpotifyData and its useEffect
-  // useEffect(() => {
-  //   fetchSpotifyData();
-  // }, []);
+  //       const updatedList = [songInfo, ...prev.filter((item) => item.id !== songInfo.id)];
+  //       localStorage.setItem('recentlyPlayed', JSON.stringify(updatedList));
+  //       return updatedList;
+  //       console.log(updatedList);
+  //     });
+  //   };
+
+  const handleCountryChange = (code) => {
+    setCountryCode(code);
+  };
 
   // Fetch Trending Songs from YouTube
   const fetchTrendingSongs = async () => {
-    const apiKey = 'AIzaSyCHM1nFjoDZgJACpSr9oxbqGtk40wumu6Y'; // Replace with your YouTube Data API Key
+    const apiKey = 'AIzaSyCHM1nFjoDZgJACpSr9oxbqGtk40wumu6Y'; 
     try {
-      // Fetch trending songs using YouTube's mostPopular chart
+      
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=10&regionCode=US&videoCategoryId=10&key=${apiKey}`
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=10&regionCode=${countryCode}&videoCategoryId=10&key=${apiKey}`
       );
       const data = await response.json();
 
@@ -59,7 +72,7 @@ const Home = () => {
         data.items.map((item) => ({
           id: item.id,
           name: item.snippet.title,
-          imageUrl: item.snippet.thumbnails.high.url, // Video thumbnail
+          imageUrl: item.snippet.thumbnails.high.url,
         }))
       );
     } catch (error) {
@@ -68,7 +81,28 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchTrendingSongs(); // Fetch trending songs on component mount
+    fetchTrendingSongs(); 
+  }, [countryCode]);
+
+  useEffect(() => {
+    const storedRecentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed')) || [];
+    setRecentlyPlayed(storedRecentlyPlayed);
+
+    const savedTrack = localStorage.getItem("currentTrack");
+    if (savedTrack) {
+      const track = JSON.parse(savedTrack);
+      const trackInfo = {
+        id: track.id,
+        name: track.snippet.title,
+        imageUrl: track.snippet.thumbnails.high.url,
+        snippet: track.snippet
+      };
+      setRecentlyPlayed((prev) => {
+        const updatedList = [trackInfo, ...prev.filter((item) => item.id !== trackInfo.id)];
+        localStorage.setItem('recentlyPlayed', JSON.stringify(updatedList));
+        return updatedList;
+      });
+    }
   }, []);
 
   return (
@@ -116,7 +150,14 @@ const Home = () => {
       </div>
 
       <div className="Home__playlists">
-        <h3 className="Home__section-title">Trending Songs</h3> {/* Updated section title */}
+        <h3 className="Home__section-title">Top 10 Trending Songs</h3> {/* Updated section title */}
+        <div className="country-buttons">
+          <button onClick={() => handleCountryChange('US')}>US-UK</button>
+          <button onClick={() => handleCountryChange('VN')}>Vietnam</button>
+          <button onClick={() => handleCountryChange('KR')}>Korea</button>
+          <button onClick={() => handleCountryChange('JP')}>Japan</button>
+          {/* <button onClick={() => handleCountryChange('CN')}>China</button> */}
+        </div>
         <div className="playlist-grid">
           {trendingSongs.length > 0 ? ( // Use trendingSongs for display
             trendingSongs.map((song) => (
@@ -136,28 +177,13 @@ const Home = () => {
 <div className="section-grid">
   {recentlyPlayed.length > 0 ? (
     recentlyPlayed.map((item) => (
-      <div className="section-grid-item" key={item.id}>
+      <div className="section-grid-item" key={item.id} onClick={() => handleSongClick(item)}>
         <img src={item.imageUrl} alt={item.name} />
         <h4>{item.name}</h4>
       </div>
     ))
   ) : (
     <p>Không có dữ liệu Recently Played để hiển thị</p>
-  )}
-</div>
-
-{/* Jump Back In Section */}
-<h3 className="Home__section-title">Jump back in</h3>
-<div className="section-grid">
-  {jumpBackIn.length > 0 ? (
-    jumpBackIn.map((item) => (
-      <div className="section-grid-item" key={item.id}>
-        <img src={item.imageUrl} alt={item.name} />
-        <h4>{item.name}</h4>
-      </div>
-    ))
-  ) : (
-    <p>Không có dữ liệu Jump Back In để hiển thị</p>
   )}
 </div>
 

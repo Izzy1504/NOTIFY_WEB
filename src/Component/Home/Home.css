@@ -175,3 +175,28 @@
     ); /* Điều chỉnh kích thước hình album cho di động */
   }
 }
+
+.country-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.country-buttons button {
+  background-color: #666967; /* Spotify green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.country-buttons button:hover {
+  background-color: #2ecadf; /* Lighter green on hover */
+}
+
+.country-buttons button:focus {
+  outline: none;
+  background-color: #2fceeb; /* Lighter green on focus */
+}
