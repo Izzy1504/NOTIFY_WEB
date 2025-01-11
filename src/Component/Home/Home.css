@@ -200,3 +200,51 @@
   outline: none;
   background-color: #2fceeb; /* Lighter green on focus */
 }
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+  .Home {
+    padding: 10px;
+  }
+
+  .Home__header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .playlist-grid, .video-grid, .section-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .playlist, .video-item, .section-grid-item {
+    width: 100%;
+  }
+
+  .country-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .country-buttons button {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .notification-popup,
+  .user-menu {
+    width: 200px;
+    right: -70px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .playlist-grid, .video-grid, .section-grid {
+    grid-template-columns: 1fr;
+  }
+}

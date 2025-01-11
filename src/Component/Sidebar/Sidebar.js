@@ -1,10 +1,26 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Sidebar/Sidebar.css';
 import { SearchContext } from '../../context/SearchContext';
 import logo from '../../assets/LOGO2.png'; // Update the logo image path
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return isMobile;
+};
+
 const Sidebar = () => {
+  const isMobile = useIsMobile();
   const [isLikedSongsOpen, setIsLikedSongsOpen] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
@@ -71,7 +87,12 @@ const Sidebar = () => {
   };
   return (
     <div className="sidebar-container">
-      <div className={`sidebar ${isSidebarOpen ? '' : 'closed'}`}>
+      {isMobile && (
+        <button onClick={toggleSidebar} className="toggle-sidebar-btn">
+          {isSidebarOpen ? '✕' : '☰'}
+        </button>
+      )}
+      <div className={`sidebar ${isMobile && !isSidebarOpen ? 'closed' : 'open'}`}>
         <div className="sidebar__header">
           <div onClick={handleHomeClick} className="home-button">
             <img src={logo} alt="Logo" className="logo" /> {/* Add the logo image */}
@@ -134,9 +155,6 @@ const Sidebar = () => {
           )}
         </div>
       </div>
-        {/* <button onClick={toggleSidebar} className="toggle-sidebar-btn">
-          {isSidebarOpen ? 'Ẩn' : 'Hiện'}
-        </button> */}
     </div>
   );
 };

@@ -28,6 +28,7 @@
 }
 
 .toggle-sidebar-btn {
+  display: none; /* Hide by default */
   background-color: #181818;
   color: #fff;
   border: none;
@@ -159,4 +160,69 @@ body {
   margin-bottom: 5px;
   margin-left: 30px;
   filter: grayscale(1) invert(1); /* Biến ảnh thành trắng đen và đảo màu */
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+  .sidebar-container {
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 250px;
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+  }
+
+  .sidebar.closed {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .toggle-sidebar-btn {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background: #282828;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+
+  .sidebar__header {
+    padding-top: 50px;
+  }
+
+  .logo {
+    width: 40px;
+    margin-left: 0;
+  }
+
+  .home-title {
+    font-size: 20px;
+  }
+
+  .sidebar__header input {
+    width: 90%;
+  }
+}
+
+/* On desktop, sidebar is always visible */
+@media screen and (min-width: 769px) {
+  .sidebar {
+    position: relative;
+    transform: none !important; /* Override mobile transforms */
+    width: 250px;
+  }
 }
