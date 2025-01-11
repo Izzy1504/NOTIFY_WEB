@@ -77,3 +77,89 @@
   font-size: 0.9em;
   color: #b3b3b3;
 }
+
+/* Add responsive styles */
+@media screen and (max-width: 1024px) {
+  .now-playing-bar {
+    padding: 8px 15px;
+  }
+
+  .track-info {
+    margin-right: 30px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .now-playing-bar {
+    padding: 8px 10px;
+    flex-wrap: wrap;
+    height: auto;
+  }
+
+  .track-info {
+    flex: 1 1 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    max-width: 100%;
+  }
+
+  .track-info img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .track-title {
+    font-size: 0.9em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .track-artist {
+    font-size: 0.8em;
+  }
+
+  .controls {
+    flex: 1 1 auto;
+    justify-content: center;
+    display: flex;
+    margin: 5px 0;
+  }
+
+  .progress-bar {
+    flex: 1 1 100%;
+    order: 4;
+    margin: 10px 0;
+  }
+
+  .volume-control {
+    margin-left: 10px;
+  }
+
+  .volume-control input[type="range"] {
+    width: 60px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .now-playing-bar {
+    left: 0;
+    width: 100%;
+    transform: none;
+    border-radius: 0;
+  }
+
+  .time-display {
+    font-size: 0.8em;
+  }
+
+  .track-title {
+    max-width: 150px;
+  }
+
+  .controls button {
+    font-size: 1em;
+    margin: 0 3px;
+  }
+}
