@@ -76,6 +76,7 @@ Homepage:
 Pagelogin:
 ![image](https://github.com/user-attachments/assets/c62b3615-4d5f-4df7-b193-18fd85645c65)
 Musicpage:
-![image](https://github.com/user-attachments/assets/6d6dc8af-701e-4c11-a904-ef87e12741ad)
-
+![image](public/mUSICPLAYER.png)
+More:
+![image](public/HOMEPAGE.png)
 
