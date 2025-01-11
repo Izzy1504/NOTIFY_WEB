@@ -4,7 +4,8 @@ Chào mừng bạn đến với ứng dụng web nghe nhạc được phát tri�
 
 **Công nghệ sử dụng:**
 
-*   **Frontend:** React
+*   **Frontend:** ReactJS
+*   **Backend:** NodeJS
 *   **API:** YouTube Data API
 
 ---
