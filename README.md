@@ -1,80 +1,89 @@
-# Getting Started with Create React App
+# 🎶 Giới Thiệu Ứng Dụng Nghe Nhạc YouTube
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Chào mừng bạn đến với ứng dụng web nghe nhạc được phát triển từ nguồn dữ liệu của YouTube. Ứng dụng này cho phép bạn dễ dàng tìm kiếm, lựa chọn và thưởng thức âm nhạc yêu thích.
 
-## Available Scripts
+**Công nghệ sử dụng:**
 
-In the project directory, you can run:
+*   **Frontend:** ReactJS
+*   **Backend:** NodeJS
+*   **API:** YouTube Data API
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Hướng Dẫn Sử Dụng
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Dự án này được khởi tạo bằng [Create React App](https://github.com/facebook/create-react-app), một bộ công cụ mạnh mẽ giúp đơn giản hóa quá trình xây dựng ứng dụng React.
 
-### `npm test`
+### Các Lệnh Cơ Bản
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Trong thư mục dự án, bạn có thể sử dụng các lệnh sau:
 
-### `npm run build`
+*   **`npm start`**
+    
+    Khởi chạy ứng dụng trong chế độ phát triển.
+    Truy cập [http://localhost:3000](http://localhost:3000) để xem ứng dụng trên trình duyệt.
+    Trang sẽ tự động tải lại khi có thay đổi.
+    Bạn cũng có thể theo dõi các lỗi lint trong console.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+*   **`npm test`**
+    
+    Khởi chạy trình kiểm thử ở chế độ tương tác.
+    Xem thêm về [running tests](https://facebook.github.io/create-react-app/docs/running-tests) để biết thêm chi tiết.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+*   **`npm run build`**
+    
+    Xây dựng ứng dụng cho môi trường production.
+    Kết quả sẽ được lưu vào thư mục `build`.
+    Lệnh này tối ưu và đóng gói mã React, đảm bảo hiệu suất tốt nhất.
+    Ứng dụng của bạn đã sẵn sàng để triển khai!
+    Tìm hiểu thêm về [deployment](https://facebook.github.io/create-react-app/docs/deployment).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+*   **`npm run eject`**
+    
+    ⚠️ **Lưu ý:** Đây là thao tác **một chiều** và **không thể hoàn tác**.
+    Nếu bạn muốn tùy chỉnh sâu hơn các công cụ xây dựng và cấu hình, hãy sử dụng lệnh này.
+    Lệnh này sẽ sao chép các tệp cấu hình và các thư viện phụ thuộc (webpack, Babel, ESLint, ...) vào dự án của bạn, cho phép bạn kiểm soát hoàn toàn.
 
-### `npm run eject`
+    Tuy nhiên, hãy cân nhắc kỹ trước khi sử dụng `eject` vì bạn sẽ phải tự mình quản lý các công cụ này.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📚 Tìm Hiểu Thêm
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+*   **Tài liệu Create React App:** [https://facebook.github.io/create-react-app/docs/getting-started](https://facebook.github.io/create-react-app/docs/getting-started)
+*   **Tài liệu React:** [https://reactjs.org/](https://reactjs.org/)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## ⚙️ Khởi Chạy Server
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Để server hoạt động, hãy chuyển đến thư mục `server` và chạy lệnh `npm start`. Server sẽ được khởi chạy tại cổng `5000`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## ⚠️ Lưu Ý Quan Trọng
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Các phần dưới đây đã được chuyển đến tài liệu chính thức của Create React App:
 
-### Analyzing the Bundle Size
+*   **Code Splitting:** [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+*   **Analyzing the Bundle Size:** [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+*   **Making a Progressive Web App:** [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+*   **Advanced Configuration:** [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+*   **Deployment:** [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+*   **`npm run build` fails to minify:** [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🖼️ Hình Ảnh Giao Diện
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**Trang chủ:**
+<img src="https://github.com/user-attachments/assets/96f5738b-892e-4fee-bc16-50356c58cb78" width="400" />
 
-### Advanced Configuration
+**Trang đăng nhập:**
+<img src="https://github.com/user-attachments/assets/c62b3615-4d5f-4df7-b193-18fd85645c65" width="400" />
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+**Trang nghe nhạc:**
+<img src="public/mUSICPLAYER.png" width="400" />
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-### photos 
-Homepage:
-![image](https://github.com/user-attachments/assets/96f5738b-892e-4fee-bc16-50356c58cb78)
-Pagelogin:
-![image](https://github.com/user-attachments/assets/c62b3615-4d5f-4df7-b193-18fd85645c65)
-Musicpage:
-![image](https://github.com/user-attachments/assets/6d6dc8af-701e-4c11-a904-ef87e12741ad)
-
-
+**Các trang khác:**
+<img src="public/HOMEPAGE.png" width="400" />
