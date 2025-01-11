@@ -49,6 +49,7 @@ const NowPlayingBar = () => {
       window.removeEventListener('trackSelected', handleTrackSelected);
     };
   }, []);
+  
 
   useEffect(() => {
     if (audioRef.current) {

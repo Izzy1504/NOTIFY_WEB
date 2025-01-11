@@ -203,6 +203,7 @@ const MusicPlayer = () => {
                     };
                 });
 
+                
                 await loadPromise;
 
                 // If we get here, audio loaded successfully
