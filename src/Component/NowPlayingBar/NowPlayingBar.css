@@ -163,3 +163,63 @@
     margin: 0 3px;
   }
 }
+
+/* iPhone specific styles */
+@media screen and (max-width: 390px) {
+  .now-playing-bar {
+    padding: 5px 8px;
+    left: 0;
+    width: 100%;
+    transform: none;
+    border-radius: 0;
+    bottom: 0;
+  }
+
+  .track-info {
+    flex: 1 1 100%;
+    margin-bottom: 8px;
+  }
+
+  .track-info img {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    margin-right: 8px;
+  }
+
+  .track-title {
+    font-size: 0.85em;
+    max-width: 120px;
+  }
+
+  .track-artist {
+    font-size: 0.75em;
+  }
+
+  .controls {
+    flex: 1 1 100%;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .controls button {
+    font-size: 0.9em;
+    margin: 0 2px;
+  }
+
+  .progress-bar {
+    margin: 8px 0;
+  }
+
+  .volume-control {
+    margin-left: 5px;
+  }
+
+  .volume-control input[type="range"] {
+    width: 50px;
+  }
+
+  .time-display {
+    font-size: 0.7em;
+  }
+}
