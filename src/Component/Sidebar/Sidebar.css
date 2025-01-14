@@ -160,6 +160,11 @@ body {
   margin-bottom: 5px;
   margin-left: 30px;
   filter: grayscale(1) invert(1); /* Biến ảnh thành trắng đen và đảo màu */
+  transition: transform 0.3s ease; /* Add transition for hover effect */
+}
+
+.logo:hover {
+  transform: scale(1.1); /* Scale up the logo on hover */
 }
 
 /* Mobile Responsive */
@@ -207,7 +212,12 @@ body {
   .logo {
     width: 40px;
     margin-left: 0;
+
   }
+  .logo:hover {
+    transform: scale(1.9);
+}
+
 
   .home-title {
     font-size: 20px;

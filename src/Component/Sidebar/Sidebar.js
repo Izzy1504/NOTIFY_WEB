@@ -29,7 +29,16 @@ const Sidebar = () => {
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [likedSongs, setLikedSongs] = useState([]);
+  const [libraryItems, setLibraryItems] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedLikedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+    const savedLibraryItems = JSON.parse(localStorage.getItem('libraryItems')) || [];
+    setLikedSongs(savedLikedSongs);
+    setLibraryItems(savedLibraryItems);
+  }, []);
 
   const handleLikedSongsToggle = () => {
     setIsLikedSongsOpen(!isLikedSongsOpen);
@@ -65,9 +74,27 @@ const Sidebar = () => {
     e.preventDefault();
     navigate(`/search?query=${searchTerm}`);
   };
+
   const handleHomeClick = () => {
     navigate('/home');
   };
+
+  const handleLogoClick = () => {
+    navigate('/home');
+  };
+
+  const handleAddToLikedSongs = (song) => {
+    const updatedLikedSongs = [...likedSongs, song];
+    setLikedSongs(updatedLikedSongs);
+    localStorage.setItem('likedSongs', JSON.stringify(updatedLikedSongs));
+  };
+
+  const handleAddToLibrary = (item) => {
+    const updatedLibraryItems = [...libraryItems, item];
+    setLibraryItems(updatedLibraryItems);
+    localStorage.setItem('libraryItems', JSON.stringify(updatedLibraryItems));
+  };
+
   const playlistData = {
     songs: [
       { id: 1, title: 'Đừng làm trái tim anh đau' },
@@ -85,6 +112,7 @@ const Sidebar = () => {
       { id: 3, title: 'Lạc trôi' },
     ],
   };
+
   return (
     <div className="sidebar-container">
       {isMobile && (
@@ -95,7 +123,7 @@ const Sidebar = () => {
       <div className={`sidebar ${isMobile && !isSidebarOpen ? 'closed' : 'open'}`}>
         <div className="sidebar__header">
           <div onClick={handleHomeClick} className="home-button">
-            <img src={logo} alt="Logo" className="logo" /> {/* Add the logo image */}
+            <img src={logo} alt="Logo" className="logo hover-effect" onClick={handleLogoClick} /> {/* Add the logo image */}
             <h2 className="home-title">Trang chủ</h2>
           </div>
           
@@ -148,7 +176,7 @@ const Sidebar = () => {
           </h5>
           {isLikedSongsOpen && (
             <ul className="dropdown-content">
-              {playlistData.likedSongs.map(song => (
+              {likedSongs.map(song => (
                 <li key={song.id}>{song.title}</li>
               ))}
             </ul>
