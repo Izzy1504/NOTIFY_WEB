@@ -56,13 +56,13 @@ const MusicPlayer = () => {
   };
 
   const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+    if (audioRef.current && audioRef.current.readyState >= 3) { // HAVE_ENOUGH_DATA
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
     }
   };
 
@@ -150,95 +150,55 @@ const MusicPlayer = () => {
   };
 
   const selectTrack = async (track) => {
-    let retryCount = 0;
-    const maxRetries = 3;
-
-    const tryLoadAudio = async () => {
-        try {
-            const videoData = {
-                id: track.id.videoId || track.id,
-                snippet: track.snippet
-            };
-
-            setSelectedTrack(videoData);
-            setVideoId(videoData.id);
-
-            if (audioRef.current) {
-                // Ensure the audio is stopped before changing source
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-
-                // Use more specific audio format and add timestamp to prevent caching
-                const timestamp = new Date().getTime();
-                const audioUrl = `http://localhost:5000/youtube-audio?videoId=${videoData.id}&t=${timestamp}`;
-
-                console.log('Loading audio from:', audioUrl);
-
-                audioRef.current.src = audioUrl;
-                audioRef.current.crossOrigin = "anonymous";
-
-                // Set audio type explicitly
-                audioRef.current.type = 'audio/mpeg';
-
-                // Create a timeout promise
-                const loadPromise = new Promise((resolve, reject) => {
-                    const timeoutId = setTimeout(() => {
-                        reject(new Error('Audio load timeout'));
-                    }, 15000); // 15 seconds timeout
-
-                    audioRef.current.oncanplaythrough = () => {
-                        clearTimeout(timeoutId);
-                        resolve();
-                    };
-
-                    audioRef.current.onerror = (e) => {
-                        clearTimeout(timeoutId);
-                        const error = e.target.error;
-                        console.error('Audio loading error:', {
-                            code: error?.code,
-                            message: error?.message,
-                            details: error
-                        });
-                        reject(new Error(`Audio load failed: ${error?.message || 'Unknown error'}`));
-                    };
-                });
-
-                
-                await loadPromise;
-
-                // If we get here, audio loaded successfully
-                setIsPlaying(true);
-                await audioRef.current.play().catch(error => {
-                    console.error('Play failed:', error);
-                    throw error;
-                });
-
-                // Save duration to localStorage
-                localStorage.setItem("trackDuration", audioRef.current.duration);
-            }
-        } catch (error) {
-            console.error(`Audio load attempt ${retryCount + 1} failed:`, error);
-            if (retryCount < maxRetries) {
-                retryCount++;
-                console.log(`Retrying... Attempt ${retryCount} of ${maxRetries}`);
-                await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
-                return tryLoadAudio();
-            }
-            throw error;
-        }
-    };
-
     try {
-        await tryLoadAudio();
+        const videoData = {
+            id: track.id.videoId || track.id,
+            snippet: track.snippet
+        };
+
+        setSelectedTrack(videoData);
+        setVideoId(videoData.id);
+        setIsPlaying(false); // Disable play button while loading
+
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+
+            const timestamp = new Date().getTime();
+            const audioUrl = `http://localhost:5000/youtube-audio?videoId=${videoData.id}&t=${timestamp}`;
+
+            // Create new Audio object to handle loading state
+            const audio = new Audio();
+            
+            audio.addEventListener('loadedmetadata', () => {
+                setDuration(audio.duration);
+                setIsPlaying(true); // Enable play button only when audio is ready
+                console.log('Audio duration:', audio.duration);
+            });
+
+            audio.addEventListener('canplay', () => {
+                audioRef.current = audio;
+                if (isPlaying) {
+                    audio.play();
+                }
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.error('Audio loading error:', e);
+                setIsPlaying(false);
+            });
+
+            audio.src = audioUrl;
+            audio.load();
+        }
+
         localStorage.setItem("currentTrack", JSON.stringify(track));
-        console.log('Track saved to localStorage:', track); // Log the saved track
-        // Notify NowPlayingBar about the selected track
-        const event = new CustomEvent('trackSelected', { detail: track });
+        const event = new CustomEvent('trackSelected', { 
+            detail: { ...track, loading: true } 
+        });
         window.dispatchEvent(event);
     } catch (error) {
-        console.error('Final error selecting track:', error);
-        // Show user-friendly error message
-        alert('Unable to load this track. Please try another one or check your connection.');
+        console.error('Error selecting track:', error);
         setIsPlaying(false);
     }
 };

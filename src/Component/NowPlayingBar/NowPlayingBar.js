@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faPause, faForward, faBackward, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faForward, faBackward, faVolumeUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './NowPlayingBar.css';
 
 const NowPlayingBar = () => {
@@ -10,12 +10,13 @@ const NowPlayingBar = () => {
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
     const savedTrack = localStorage.getItem('currentTrack');
     const savedDuration = localStorage.getItem('trackDuration');
-    console.log('Saved track from localStorage:', savedTrack); // Log the saved track
+    console.log('Saved track from localStorage:', savedTrack); // đẩy ra các saved track
     if (savedTrack) {
       const track = JSON.parse(savedTrack);
       setCurrentTrack(track);
@@ -26,29 +27,50 @@ const NowPlayingBar = () => {
         audioRef.current.src = `http://localhost:5000/youtube-audio?videoId=${track.id}`;
         audioRef.current.play();
         setIsPlaying(true);
-        console.log('NowPlayingBar is displaying the track:', track); // Log the track being displayed
+        console.log('NowPlayingBar is displaying the track:', track); // track đang phát
       }
     }
   }, []);
 
   useEffect(() => {
-    const handleTrackSelected = (event) => {
+    const handleTrackSelected = async (event) => {
       const track = event.detail;
       setCurrentTrack(track);
+      setIsLoading(true);
+      setIsPlaying(false);
+
       if (audioRef.current) {
-        audioRef.current.src = `http://localhost:5000/youtube-audio?videoId=${track.id}`;
-        audioRef.current.play();
-        setIsPlaying(true);
-        console.log('NowPlayingBar is displaying the track:', track); // Log the track being displayed
+        try {
+          //  lấy âm thanh từ video YouTube dựa trên ID của video
+          const response = await fetch(
+            `http://localhost:5000/youtube-audio?videoId=${track.id}`, 
+            { method: 'HEAD' }
+          );
+          
+          const duration = response.headers.get('X-Audio-Duration');
+          if (duration) {
+            setDuration(parseFloat(duration));
+          }
+
+          // biến video thành audio 
+          audioRef.current.src = `http://localhost:5000/youtube-audio?videoId=${track.id}`;
+          
+          audioRef.current.addEventListener('canplay', () => {
+            setIsLoading(false);
+            if (isPlaying) {
+              audioRef.current.play();
+            }
+          }, { once: true });
+        } catch (error) {
+          console.error('Error loading audio:', error);
+          setIsLoading(false);
+        }
       }
     };
-
+// ở đây thì khi một track được chọn, nó sẽ được phát nhừ gọi lại hàm handleTrackSelected
     window.addEventListener('trackSelected', handleTrackSelected);
-
-    return () => {
-      window.removeEventListener('trackSelected', handleTrackSelected);
-    };
-  }, []);
+    return () => window.removeEventListener('trackSelected', handleTrackSelected);
+  }, [isPlaying]);
   
 
   useEffect(() => {
@@ -85,7 +107,7 @@ const NowPlayingBar = () => {
   }, []);
 
   const togglePlayPause = () => {
-    if (audioRef.current) {
+    if (!isLoading && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
@@ -94,7 +116,7 @@ const NowPlayingBar = () => {
       setIsPlaying(!isPlaying);
     }
   };
-
+// bài tiếp theo thì chưa có flow nên chưa làm
   const handleNext = () => {
     // Implement logic to play the next track
   };
@@ -102,18 +124,18 @@ const NowPlayingBar = () => {
   const handlePrevious = () => {
     // Implement logic to play the previous track
   };
-
+// tăng âm lượng 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
   };
-
+// thay đổi thời gian phát
   const handleProgressChange = (event) => {
     if (audioRef.current) {
       audioRef.current.currentTime = (event.target.value / 100) * audioRef.current.duration;
       setProgress(event.target.value);
     }
   };
-
+// định dạng thời gian
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -131,13 +153,13 @@ const NowPlayingBar = () => {
           </div>
         </div>
         <div className="controls">
-          <button onClick={handlePrevious}>
+          <button onClick={handlePrevious} disabled={isLoading}>
             <FontAwesomeIcon icon={faBackward} />
           </button>
-          <button onClick={togglePlayPause}>
-            <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
+          <button onClick={togglePlayPause} disabled={isLoading}>
+            <FontAwesomeIcon icon={isLoading ? faSpinner : (isPlaying ? faPause : faPlay)} />
           </button>
-          <button onClick={handleNext}>
+          <button onClick={handleNext} disabled={isLoading}>
             <FontAwesomeIcon icon={faForward} />
           </button>
         </div>
