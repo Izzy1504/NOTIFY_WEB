@@ -109,6 +109,7 @@ async function uploadToDrive(filePath, fileName) {
 const YT_DLP_PATH = path.join(__dirname, 'yt-dlp.exe');
 
 // Update youtube-dl options
+
 const getYoutubeDlOptions = (tempFilePath) => ({
   extractAudio: true,
   audioFormat: 'mp3',
@@ -128,6 +129,17 @@ const getYoutubeDlOptions = (tempFilePath) => ({
   progress: true
 });
 
+// Helper function to check if file exists in cache
+async function findFileInCache(videoId) {
+  const cachedFilePath = path.join(cacheDir, `${videoId}.mp3`);
+  try {
+    await fsAccess(cachedFilePath, fs.constants.F_OK);
+    return cachedFilePath;
+  } catch (error) {
+    return null;
+  }
+}
+
 app.get('/youtube-audio', async (req, res) => {
   const videoId = req.query.videoId;
   if (!videoId) {
@@ -144,7 +156,18 @@ app.get('/youtube-audio', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('X-Audio-Status', 'loading');
 
-  // Kiểm tra file có tồn tại kh
+    // Check if file exists in cache
+    let cachedFilePath = await findFileInCache(videoId);
+    if (cachedFilePath) {
+      console.log(`File found in cache, streaming from cache: ${cachedFilePath}`);
+      const stream = fs.createReadStream(cachedFilePath);
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      stream.pipe(res);
+      return;
+    }
+
+    // Check if file exists in Google Drive
     const driveFile = await findFileInDrive(videoId);
     if (driveFile) {
       console.log(`File found in Drive, streaming from Drive: ${driveFile.id}`);
@@ -156,10 +179,12 @@ app.get('/youtube-audio', async (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       driveResponse.data.pipe(res);
       return;
+    } else {
+      console.log(`File not found in Drive for video ID: ${videoId}. Downloading and processing...`);
     }
 
     // Download and process new file
-    const tempFilePath = path.join(__dirname, 'temp', `${videoId}.mp3`);
+    const tempFilePath = path.join(tempDir, `${videoId}.mp3`);
     const options = getYoutubeDlOptions(tempFilePath);
     console.log('Downloading with options:', JSON.stringify(options, null, 2));
     
@@ -167,10 +192,9 @@ app.get('/youtube-audio', async (req, res) => {
       await youtubeDl(videoUrl, options);
     } catch (dlError) {
       console.error('Download error:', dlError);
-      // Thử lại với options khác nếu lỗi
+      // Retry with different options if error occurs
       const retryOptions = {
         ...options,
-        forceIpv4: false,
         addHeader: [
           ...options.addHeader,
           'Cookie: CONSENT=YES+1'
@@ -208,18 +232,15 @@ app.get('/youtube-audio', async (req, res) => {
       // Continue with local file streaming even if upload fails
     }
 
+    // Move temp file to cache directory
+    cachedFilePath = path.join(cacheDir, `${videoId}.mp3`);
+    fs.renameSync(tempFilePath, cachedFilePath);
+
     // Stream the file to client
-    const stream = fs.createReadStream(tempFilePath);
+    const stream = fs.createReadStream(cachedFilePath);
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Access-Control-Allow-Origin', '*');
     stream.pipe(res);
-
-    // Clean up temp file
-    stream.on('end', () => {
-      fs.unlink(tempFilePath, (err) => {
-        if (err) console.error('Error deleting temp file:', err);
-      });
-    });
 
   } catch (error) {
     console.error('Error details:', error.message);
@@ -238,6 +259,37 @@ app.get('/cached-tracks', (req, res) => {
     });
     res.json(tracks);
   });
+});
+
+app.get('/track-duration', async (req, res) => {
+  const videoId = req.query.videoId;
+  if (!videoId) {
+    return res.status(400).send('Video ID is required');
+  }
+
+  try {
+    const driveFile = await findFileInDrive(videoId);
+    if (driveFile) {
+      const fileId = driveFile.id;
+      const file = await drive.files.get({
+        fileId: fileId,
+        fields: 'id, name, mimeType, size'
+      });
+
+      const duration = await youtubeDl(`https://www.youtube.com/watch?v=${videoId}`, {
+        dumpSingleJson: true,
+        noCheckCertificates: true,
+        noWarnings: true
+      });
+
+      res.json({ duration: duration.duration });
+    } else {
+      res.status(404).send('File not found in Drive');
+    }
+  } catch (error) {
+    console.error('Error getting track duration:', error);
+    res.status(500).send('Error getting track duration');
+  }
 });
 
 // Add ffmpeg check function

@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faForward, faBackward, faVolumeUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './NowPlayingBar.css';
 
+const audioCache = new Map();
+
 const NowPlayingBar = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -40,37 +42,72 @@ const NowPlayingBar = () => {
       setIsPlaying(false);
 
       if (audioRef.current) {
-        try {
-          //  lấy âm thanh từ video YouTube dựa trên ID của video
-          const response = await fetch(
-            `http://localhost:5000/youtube-audio?videoId=${track.id}`, 
-            { method: 'HEAD' }
-          );
-          
-          const duration = response.headers.get('X-Audio-Duration');
-          if (duration) {
-            setDuration(parseFloat(duration));
-          }
+        audioRef.current.pause(); // Pause the current track immediately
+        audioRef.current.src = ''; // Clear the current source
 
-          // biến video thành audio 
-          audioRef.current.src = `http://localhost:5000/youtube-audio?videoId=${track.id}`;
-          
-          audioRef.current.addEventListener('canplay', () => {
+        try {
+          // Check if the track is already in the cache
+          if (audioCache.has(track.id)) {
+            const cachedAudio = audioCache.get(track.id);
+            audioRef.current.src = cachedAudio.src;
+            setDuration(cachedAudio.duration);
             setIsLoading(false);
-            if (isPlaying) {
-              audioRef.current.play();
+            audioRef.current.play().catch(error => {
+              if (error.name !== 'AbortError') {
+                console.error('Error playing audio:', error);
+              }
+            });
+            setIsPlaying(true);
+          } else {
+            // Fetch track duration from the new route
+            const durationResponse = await fetch(
+              `http://localhost:5000/track-duration?videoId=${track.id}`
+            );
+            if (durationResponse.ok) {
+              const durationData = await durationResponse.json();
+              if (durationData.duration) {
+                setDuration(parseFloat(durationData.duration));
+              }
+            } else {
+              console.error('Error fetching track duration:', durationResponse.statusText);
             }
-          }, { once: true });
+
+            // Fetch audio from YouTube
+            const response = await fetch(
+              `http://localhost:5000/youtube-audio?videoId=${track.id}`, 
+              { method: 'HEAD' }
+            );
+            
+            const duration = response.headers.get('X-Audio-Duration');
+            if (duration) {
+              setDuration(parseFloat(duration));
+            }
+
+            // Set audio source and cache it
+            const audioSrc = `http://localhost:5000/youtube-audio?videoId=${track.id}`;
+            audioRef.current.src = audioSrc;
+            audioCache.set(track.id, { src: audioSrc, duration: parseFloat(duration) });
+
+            audioRef.current.addEventListener('canplay', () => {
+              setIsLoading(false);
+              audioRef.current.play().catch(error => {
+                if (error.name !== 'AbortError') {
+                  console.error('Error playing audio:', error);
+                }
+              });
+              setIsPlaying(true);
+            }, { once: true });
+          }
         } catch (error) {
           console.error('Error loading audio:', error);
           setIsLoading(false);
         }
       }
     };
-// ở đây thì khi một track được chọn, nó sẽ được phát nhừ gọi lại hàm handleTrackSelected
+
     window.addEventListener('trackSelected', handleTrackSelected);
     return () => window.removeEventListener('trackSelected', handleTrackSelected);
-  }, [isPlaying]);
+  }, [isPlaying, currentTrack]);
   
 
   useEffect(() => {
