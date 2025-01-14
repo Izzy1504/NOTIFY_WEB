@@ -128,21 +128,6 @@ const getYoutubeDlOptions = (tempFilePath) => ({
   progress: true
 });
 
-// Add new helper function to get audio duration
-async function getAudioDuration(filePath) {
-  try {
-    const info = await youtubeDl.exec(filePath, {
-      dumpSingleJson: true,
-      noCheckCertificates: true,
-      noWarnings: true
-    });
-    return info.duration;
-  } catch (error) {
-    console.error('Error getting duration:', error);
-    return null;
-  }
-}
-
 app.get('/youtube-audio', async (req, res) => {
   const videoId = req.query.videoId;
   if (!videoId) {
@@ -159,49 +144,17 @@ app.get('/youtube-audio', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('X-Audio-Status', 'loading');
 
-    // Check if file exists in Google Drive
+  // Kiểm tra file có tồn tại kh
     const driveFile = await findFileInDrive(videoId);
     if (driveFile) {
       console.log(`File found in Drive, streaming from Drive: ${driveFile.id}`);
-      
-      // Get duration for existing file
-      const tempFilePath = path.join(tempDir, `${videoId}.mp3`);
-      
-      // Download file temporarily to get duration
-      await drive.files.get(
-        { fileId: driveFile.id, alt: 'media' },
-        { responseType: 'stream' }
-      ).then(response => {
-        return new Promise((resolve, reject) => {
-          const dest = fs.createWriteStream(tempFilePath);
-          response.data
-            .pipe(dest)
-            .on('finish', resolve)
-            .on('error', reject);
-        });
-      });
-
-      // Get duration
-      const duration = await getAudioDuration(tempFilePath);
-      if (duration) {
-        res.setHeader('X-Audio-Duration', duration);
-      }
-
-      // Stream the file
       const driveResponse = await drive.files.get(
         { fileId: driveFile.id, alt: 'media' },
         { responseType: 'stream' }
       );
-      
       res.setHeader('Content-Type', 'audio/mpeg');
       res.setHeader('Access-Control-Allow-Origin', '*');
       driveResponse.data.pipe(res);
-
-      // Clean up temp file
-      fs.unlink(tempFilePath, err => {
-        if (err) console.error('Error deleting temp file:', err);
-      });
-      
       return;
     }
 
@@ -239,12 +192,6 @@ app.get('/youtube-audio', async (req, res) => {
       res.setHeader('X-Audio-Status', 'ready');
     } catch (error) {
       console.error('Error getting duration:', error);
-    }
-
-    // Get duration before uploading
-    const duration = await getAudioDuration(tempFilePath);
-    if (duration) {
-      res.setHeader('X-Audio-Duration', duration);
     }
 
     // Upload to Google Drive with proper error handling
