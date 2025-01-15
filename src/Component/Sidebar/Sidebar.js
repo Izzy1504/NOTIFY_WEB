@@ -89,28 +89,10 @@ const Sidebar = () => {
     localStorage.setItem('likedSongs', JSON.stringify(updatedLikedSongs));
   };
 
-  const handleAddToLibrary = (item) => {
-    const updatedLibraryItems = [...libraryItems, item];
+  const handleAddToLibrary = (album) => {
+    const updatedLibraryItems = [...libraryItems, album];
     setLibraryItems(updatedLibraryItems);
     localStorage.setItem('libraryItems', JSON.stringify(updatedLibraryItems));
-  };
-
-  const playlistData = {
-    songs: [
-      { id: 1, title: 'Đừng làm trái tim anh đau' },
-      { id: 2, title: 'Sơn Tùng và các bài hát khác' },
-      { id: 3, title: 'Vũ.' },
-      { id: 4, title: 'RPT MCK' },
-      { id: 5, title: 'RAP VIỆT' },
-    ],
-    artists: [
-      { id: 1, name: 'Sơn Tùng' },
-    ],
-    likedSongs: [
-      { id: 1, title: 'Em của ngày hôm qua' },
-      { id: 2, title: 'Hãy trao cho anh' },
-      { id: 3, title: 'Lạc trôi' },
-    ],
   };
 
   return (
@@ -143,30 +125,16 @@ const Sidebar = () => {
           </h5>
           {isLibraryOpen && (
             <ul className="dropdown-content">
-              <li onClick={handlePlaylistToggle} className="nested-dropdown-toggle">
-                Playlist
-                {isPlaylistOpen && (
+              {libraryItems.map(album => (
+                <li key={album.id} className="nested-dropdown-toggle">
+                  {album.title}
                   <ul className="nested-dropdown-content">
-                    {playlistData.songs.map(song => (
-                      <li key={song.id} onClick={() => handlePlaylistSelect(song)}>
-                        {song.title}
-                      </li>
+                    {album.songs.map(song => (
+                      <li key={song.id}>{song.title}</li>
                     ))}
                   </ul>
-                )}
-              </li>
-              <li onClick={handleArtistToggle} className="nested-dropdown-toggle">
-                Nghệ sĩ
-                {isArtistOpen && (
-                  <ul className="nested-dropdown-content">
-                    {playlistData.artists.map(artist => (
-                      <li key={artist.id} onClick={() => handleArtistSelect(artist)}>
-                        {artist.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
+                </li>
+              ))}
             </ul>
           )}
         </div>

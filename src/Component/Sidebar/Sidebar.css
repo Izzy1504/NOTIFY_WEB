@@ -167,6 +167,22 @@ body {
   transform: scale(1.1); /* Scale up the logo on hover */
 }
 
+.control-button {
+  background-color: #343636;
+  border: none;
+  border-radius: 50%;
+  padding: 15px;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.2s; /* Add smooth hover transition */
+  margin-right: 10px; /* Add spacing between buttons */
+}
+
+.control-button:hover {
+  background-color: #343636;
+  transform: scale(1.1); /* Slightly scale on hover */
+}
+
 /* Mobile Responsive */
 @media screen and (max-width: 768px) {
   .sidebar-container {
@@ -234,5 +250,29 @@ body {
     position: relative;
     transform: none !important; /* Override mobile transforms */
     width: 250px;
+  }
+}
+
+/* Optimize for 1920x1080 screens */
+@media screen and (min-width: 1920px) {
+  .sidebar-container {
+    width: 300px;
+  }
+
+  .sidebar {
+    width: 300px;
+    padding: 30px;
+  }
+
+  .sidebar__header input {
+    width: 100%;
+  }
+
+  .logo {
+    width: 60px;
+  }
+
+  .home-title {
+    font-size: 28px;
   }
 }
